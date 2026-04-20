@@ -1130,7 +1130,6 @@
   .ba-img-before {
     clip-path: inset(0 50% 0 0);
     will-change: clip-path;
-    transition: clip-path 0.1s ease-out;
   }
   .ba-slider {
     position: absolute;
@@ -1142,7 +1141,6 @@
     pointer-events: none;
     z-index: 3;
     will-change: left;
-    transition: left 0.1s ease-out;
   }
   .ba-slider-line {
     width: 100%;
@@ -1929,42 +1927,91 @@
     if (!imgBefore || !slider) return;
 
     let isDragging = false;
+    let targetPercent = 50;
+    let currentPercent = 50;
+    let hintActive = true; // Pour stopper le hint si l'utilisateur interagit
+    let rafId = null;
 
-    function updatePosition(clientX) {
-      const rect = container.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const percent = Math.max(0, Math.min(100, (x / rect.width) * 100));
-
-      imgBefore.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
-      slider.style.left = percent + '%';
+    // Rendu via requestAnimationFrame pour 60fps garantis
+    function render() {
+      // Interpolation très rapide (quasi-instant) pour suivre la souris sans lag
+      currentPercent += (targetPercent - currentPercent) * 0.5;
+      
+      // Snap quand on est assez proche
+      if (Math.abs(targetPercent - currentPercent) < 0.1) {
+        currentPercent = targetPercent;
+      }
+      
+      imgBefore.style.clipPath = `inset(0 ${100 - currentPercent}% 0 0)`;
+      slider.style.left = currentPercent + '%';
+      
+      // Continue tant qu'on n'est pas stabilisé
+      if (currentPercent !== targetPercent) {
+        rafId = requestAnimationFrame(render);
+      } else {
+        rafId = null;
+      }
+    }
+    
+    function setTarget(percent) {
+      targetPercent = Math.max(0, Math.min(100, percent));
+      if (rafId === null) {
+        rafId = requestAnimationFrame(render);
+      }
     }
 
-    // Souris
+    function getPercentFromX(clientX) {
+      const rect = container.getBoundingClientRect();
+      const x = clientX - rect.left;
+      return (x / rect.width) * 100;
+    }
+
+    // SOURIS - clic pour drag
     container.addEventListener('mousedown', (e) => {
       isDragging = true;
-      updatePosition(e.clientX);
+      hintActive = false;
+      container.style.cursor = 'ew-resize';
+      setTarget(getPercentFromX(e.clientX));
+      e.preventDefault();
     });
-    window.addEventListener('mousemove', (e) => {
-      if (isDragging) updatePosition(e.clientX);
-    });
-    window.addEventListener('mouseup', () => { isDragging = false; });
 
-    // Hover simple (bouger sans cliquer)
+    // Mouvement souris : glisse ou hover suivi
     container.addEventListener('mousemove', (e) => {
-      if (!isDragging) updatePosition(e.clientX);
+      hintActive = false;
+      setTarget(getPercentFromX(e.clientX));
     });
 
-    // Touch (mobile)
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        setTarget(getPercentFromX(e.clientX));
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      container.style.cursor = '';
+    });
+
+    // TOUCH (mobile) - plus simple, direct
     container.addEventListener('touchstart', (e) => {
       isDragging = true;
-      updatePosition(e.touches[0].clientX);
+      hintActive = false;
+      setTarget(getPercentFromX(e.touches[0].clientX));
     }, { passive: true });
+
     container.addEventListener('touchmove', (e) => {
       if (isDragging) {
-        updatePosition(e.touches[0].clientX);
+        setTarget(getPercentFromX(e.touches[0].clientX));
       }
     }, { passive: true });
-    container.addEventListener('touchend', () => { isDragging = false; });
+
+    container.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // Stocker hintActive pour le hint d'intro
+    container._hintActive = () => hintActive;
+    container._setTarget = setTarget;
   });
 
   // ═══════════════════════════════════════════════════════
@@ -1986,31 +2033,33 @@
   }
 
   // ═══════════════════════════════════════════════════════
-  //  6. HINT au 1er chargement sur l'avant/après
+  //  6. HINT d'intro au 1er chargement (sans bloquer l'interaction)
   // ═══════════════════════════════════════════════════════
   const firstBA = document.querySelector('.ba-compare');
-  if (firstBA) {
+  if (firstBA && firstBA._setTarget) {
     const baObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const before = entry.target.querySelector('.ba-img-before');
-          const slider = entry.target.querySelector('.ba-slider');
-          // Mini-animation pour montrer qu'on peut slider
-          let pos = 50;
-          const interval = setInterval(() => {
-            pos += 2;
-            if (pos > 70) { clearInterval(interval); animateBack(); }
-            if (before) before.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
-            if (slider) slider.style.left = pos + '%';
-          }, 30);
-          function animateBack() {
-            const backInt = setInterval(() => {
-              pos -= 2;
-              if (pos < 50) { clearInterval(backInt); }
-              if (before) before.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
-              if (slider) slider.style.left = pos + '%';
-            }, 30);
+          const setTarget = entry.target._setTarget;
+          const hintActive = entry.target._hintActive;
+          
+          // Animation d'intro : 50 → 75 → 25 → 50
+          let step = 0;
+          const sequence = [
+            { target: 75, duration: 600 },
+            { target: 25, duration: 800 },
+            { target: 50, duration: 500 }
+          ];
+          
+          function playStep() {
+            if (step >= sequence.length) return;
+            if (!hintActive()) return; // Stop si user interagit
+            setTarget(sequence[step].target);
+            step++;
+            setTimeout(playStep, sequence[step-1].duration);
           }
+          
+          setTimeout(playStep, 400);
           baObserver.unobserve(entry.target);
         }
       });
