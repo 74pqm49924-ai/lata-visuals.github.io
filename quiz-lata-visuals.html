@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trouvez votre formule — LATA VISUALS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: #8B6F2E;
+    --black: #080808;
+    --black-2: #121212;
+    --white: #F5F0E8;
+    --grey: #888;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND GRID + GLOW */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .glow-top {
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .glow-bottom {
+    position: fixed;
+    bottom: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* CONTAINER */
+  .container {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .eyebrow::before,
+  .eyebrow::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .main-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 8vw, 72px);
+    letter-spacing: 4px;
+    line-height: 0.9;
+    margin-bottom: 14px;
+  }
+  .main-title .gold { color: var(--gold); }
+  .main-subtitle {
+    font-size: 16px;
+    color: #aaa;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* DRONE SVG - animé */
+  .drone-wrapper {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 100px;
+    z-index: 10;
+    pointer-events: none;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-12px); }
+  }
+  .drone-wrapper svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 10px 20px rgba(201,168,76,0.4));
+  }
+  .prop {
+    transform-origin: center;
+    animation: spin 0.15s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 40px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(201,168,76,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-light));
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(201,168,76,0.5);
+  }
+
+  /* SCREEN STATES */
+  .screen {
+    display: none;
+    width: 100%;
+    animation: fadeIn 0.6s ease-out;
+  }
+  .screen.active {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--black-2);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 16px;
+    padding: 35px 30px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .question-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .question-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(26px, 5vw, 36px);
+    letter-spacing: 2px;
+    line-height: 1.15;
+    margin-bottom: 28px;
+    color: var(--white);
+  }
+  .question-text .gold { color: var(--gold); }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .option-btn {
+    background: transparent;
+    border: 1.5px solid rgba(201,168,76,0.25);
+    border-radius: 12px;
+    padding: 18px 22px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    line-height: 1.3;
+  }
+  .option-btn:hover {
+    background: rgba(201,168,76,0.08);
+    border-color: var(--gold);
+    transform: translateX(4px);
+  }
+  .option-btn:active {
+    transform: translateX(4px) scale(0.98);
+  }
+  .option-emoji {
+    font-size: 24px;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(201,168,76,0.3);
+  }
+
+  /* WELCOME SCREEN */
+  .welcome {
+    text-align: center;
+  }
+  .welcome-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(44px, 9vw, 80px);
+    letter-spacing: 5px;
+    line-height: 0.9;
+    margin-bottom: 20px;
+  }
+  .welcome-title .gold { color: var(--gold); }
+  .welcome-divider {
+    width: 80px;
+    height: 2px;
+    background: var(--gold);
+    margin: 20px auto;
+  }
+  .welcome-text {
+    font-size: 17px;
+    color: #bbb;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto 20px;
+  }
+  .welcome-meta {
+    display: inline-flex;
+    gap: 24px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .welcome-meta div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 18px 44px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(201,168,76,0.4);
+    background: var(--gold-light);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--gold);
+    border: 1.5px solid var(--gold);
+    padding: 14px 28px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+  }
+  .btn-ghost:hover {
+    background: rgba(201,168,76,0.1);
+  }
+
+  /* RESULT SCREEN */
+  .result {
+    text-align: center;
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+  .result-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--black);
+    padding: 10px 24px;
+    font-size: 11px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 50px;
+    margin-bottom: 24px;
+  }
+  .result-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 7vw, 58px);
+    letter-spacing: 3px;
+    line-height: 0.95;
+    margin-bottom: 16px;
+  }
+  .result-title .gold { color: var(--gold); }
+  .result-divider {
+    width: 80px;
+    height: 2px;
+    background: var(--gold);
+    margin: 20px auto;
+  }
+  .result-subtitle {
+    font-size: 18px;
+    color: #bbb;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+  .result-subtitle strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+  .result-card {
+    background: var(--black-2);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 16px;
+    padding: 30px 28px;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+  .result-card-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .result-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 14px;
+  }
+  .result-card-desc {
+    font-size: 15px;
+    color: #bbb;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+  .result-features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .result-feature {
+    font-size: 14px;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .result-feature::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .result-feature strong { color: var(--white); }
+  .result-price {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(201,168,76,0.15);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--gold);
+  }
+  .result-price span {
+    font-size: 13px;
+    color: var(--grey);
+    letter-spacing: 1px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .result-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .question-card { padding: 28px 22px; }
+    .result-card { padding: 24px 20px; }
+    .drone-wrapper { width: 70px; height: 70px; top: 20px; }
+    .main-title { font-size: 40px; }
+  }
+
+  /* BACK BUTTON */
+  .back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    padding: 8px 14px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+    z-index: 15;
+  }
+  .back-btn:hover {
+    background: rgba(201,168,76,0.1);
+    color: var(--white);
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-top"></div>
+<div class="glow-bottom"></div>
+
+<!-- DRONE ANIMÉ -->
+<div class="drone-wrapper" id="drone">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Corps central -->
+    <circle cx="50" cy="50" r="10" fill="#C9A84C"/>
+    <circle cx="50" cy="50" r="6" fill="#080808"/>
+    <circle cx="50" cy="50" r="3" fill="#C9A84C"/>
+
+    <!-- Bras du drone (X) -->
+    <line x1="50" y1="50" x2="20" y2="25" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="80" y2="25" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="20" y2="75" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="80" y2="75" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Bases moteurs -->
+    <circle cx="20" cy="25" r="6" fill="#8B6F2E"/>
+    <circle cx="80" cy="25" r="6" fill="#8B6F2E"/>
+    <circle cx="20" cy="75" r="6" fill="#8B6F2E"/>
+    <circle cx="80" cy="75" r="6" fill="#8B6F2E"/>
+
+    <!-- HÉLICES qui tournent -->
+    <g class="prop" style="transform-origin: 20px 25px;">
+      <ellipse cx="20" cy="25" rx="14" ry="1.5" fill="#C9A84C" opacity="0.6"/>
+      <ellipse cx="20" cy="25" rx="1.5" ry="14" fill="#C9A84C" opacity="0.6"/>
+    </g>
+    <g class="prop" style="transform-origin: 80px 25px;">
+      <ellipse cx="80" cy="25" rx="14" ry="1.5" fill="#C9A84C" opacity="0.6"/>
+      <ellipse cx="80" cy="25" rx="1.5" ry="14" fill="#C9A84C" opacity="0.6"/>
+    </g>
+    <g class="prop" style="transform-origin: 20px 75px;">
+      <ellipse cx="20" cy="75" rx="14" ry="1.5" fill="#C9A84C" opacity="0.6"/>
+      <ellipse cx="20" cy="75" rx="1.5" ry="14" fill="#C9A84C" opacity="0.6"/>
+    </g>
+    <g class="prop" style="transform-origin: 80px 75px;">
+      <ellipse cx="80" cy="75" rx="14" ry="1.5" fill="#C9A84C" opacity="0.6"/>
+      <ellipse cx="80" cy="75" rx="1.5" ry="14" fill="#C9A84C" opacity="0.6"/>
+    </g>
+  </svg>
+</div>
+
+<div class="container">
+
+  <!-- WELCOME SCREEN -->
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome">
+      <div class="eyebrow">Trouvez votre formule</div>
+      <h1 class="welcome-title">EN <span class="gold">4 QUESTIONS</span><br>ON TROUVE<br>VOTRE BESOIN.</h1>
+      <div class="welcome-divider"></div>
+      <p class="welcome-text">
+        Un quiz rapide pour identifier la prestation qui vous correspond.
+        Drone, photo, contenu, accompagnement mensuel : je vous guide.
+      </p>
+      <div class="welcome-meta">
+        <div>⏱ 60 secondes</div>
+        <div>🎯 Résultat perso</div>
+      </div>
+      <br>
+      <button class="btn-primary" onclick="startQuiz()">
+        LANCER LE QUIZ →
+      </button>
+    </div>
+  </div>
+
+  <!-- QUESTION SCREENS -->
+  <div class="screen" id="screen-q1">
+    <div class="progress-wrapper">
+      <div class="progress-label">
+        <span>Question 1 / 4</span>
+        <span>25%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 25%;"></div>
+      </div>
+    </div>
+    <div class="question-card">
+      <div class="question-num">01</div>
+      <h2 class="question-text">VOUS ÊTES <span class="gold">PLUTÔT...</span></h2>
+      <div class="options">
+        <button class="option-btn" onclick="answer('profile', 'club')">
+          <span class="option-emoji">🎾</span>
+          <span>Un <strong>club sportif</strong> (padel, tennis, foot...)</span>
+        </button>
+        <button class="option-btn" onclick="answer('profile', 'entreprise')">
+          <span class="option-emoji">🏢</span>
+          <span>Une <strong>entreprise ou marque</strong> locale</span>
+        </button>
+        <button class="option-btn" onclick="answer('profile', 'event')">
+          <span class="option-emoji">🎉</span>
+          <span>Un <strong>organisateur d'événement</strong></span>
+        </button>
+        <button class="option-btn" onclick="answer('profile', 'particulier')">
+          <span class="option-emoji">👤</span>
+          <span>Un <strong>particulier / projet perso</strong></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-q2">
+    <button class="back-btn" onclick="goBack('q1')">← Retour</button>
+    <div class="progress-wrapper">
+      <div class="progress-label">
+        <span>Question 2 / 4</span>
+        <span>50%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 50%;"></div>
+      </div>
+    </div>
+    <div class="question-card">
+      <div class="question-num">02</div>
+      <h2 class="question-text">VOTRE BESOIN EST <span class="gold">PLUTÔT...</span></h2>
+      <div class="options">
+        <button class="option-btn" onclick="answer('frequency', 'ponctuel')">
+          <span class="option-emoji">⚡</span>
+          <span><strong>Ponctuel</strong> (un shooting, un event, un projet)</span>
+        </button>
+        <button class="option-btn" onclick="answer('frequency', 'regulier')">
+          <span class="option-emoji">🔄</span>
+          <span><strong>Régulier</strong> (contenu tous les mois)</span>
+        </button>
+        <button class="option-btn" onclick="answer('frequency', 'hesite')">
+          <span class="option-emoji">🤔</span>
+          <span>Je ne sais pas encore, j'<strong>explore</strong></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-q3">
+    <button class="back-btn" onclick="goBack('q2')">← Retour</button>
+    <div class="progress-wrapper">
+      <div class="progress-label">
+        <span>Question 3 / 4</span>
+        <span>75%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 75%;"></div>
+      </div>
+    </div>
+    <div class="question-card">
+      <div class="question-num">03</div>
+      <h2 class="question-text">QU'EST-CE QUI VOUS <span class="gold">FAIT VIBRER ?</span></h2>
+      <div class="options">
+        <button class="option-btn" onclick="answer('type', 'drone')">
+          <span class="option-emoji">🚁</span>
+          <span>Les <strong>images aériennes</strong> (drone 4K)</span>
+        </button>
+        <button class="option-btn" onclick="answer('type', 'photo')">
+          <span class="option-emoji">📸</span>
+          <span>Les <strong>photos pro</strong> (sport, event, portrait)</span>
+        </button>
+        <button class="option-btn" onclick="answer('type', 'reel')">
+          <span class="option-emoji">🎬</span>
+          <span>Les <strong>Reels Instagram</strong> qui cartonnent</span>
+        </button>
+        <button class="option-btn" onclick="answer('type', 'full')">
+          <span class="option-emoji">✨</span>
+          <span>Un <strong>pack complet</strong> (tout en un)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-q4">
+    <button class="back-btn" onclick="goBack('q3')">← Retour</button>
+    <div class="progress-wrapper">
+      <div class="progress-label">
+        <span>Question 4 / 4</span>
+        <span>100%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 100%;"></div>
+      </div>
+    </div>
+    <div class="question-card">
+      <div class="question-num">04</div>
+      <h2 class="question-text">VOTRE <span class="gold">BUDGET</span> ?</h2>
+      <div class="options">
+        <button class="option-btn" onclick="answer('budget', 'small')">
+          <span class="option-emoji">💡</span>
+          <span><strong>Moins de 500€</strong> — un premier test</span>
+        </button>
+        <button class="option-btn" onclick="answer('budget', 'medium')">
+          <span class="option-emoji">⭐</span>
+          <span><strong>500€ — 1000€</strong> — un vrai projet</span>
+        </button>
+        <button class="option-btn" onclick="answer('budget', 'large')">
+          <span class="option-emoji">🔥</span>
+          <span><strong>Plus de 1000€</strong> — je vois grand</span>
+        </button>
+        <button class="option-btn" onclick="answer('budget', 'flexible')">
+          <span class="option-emoji">🤝</span>
+          <span><strong>À discuter</strong> selon ce que vous proposez</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="screen" id="screen-result">
+    <div class="result">
+      <div class="result-badge">Votre formule idéale</div>
+      <h2 class="result-title" id="resultTitle">✨ LE PACK <span class="gold">PARFAIT</span></h2>
+      <div class="result-divider"></div>
+      <p class="result-subtitle" id="resultSubtitle">
+        D'après vos réponses, voici <strong>ce qui correspond</strong> le mieux à vos besoins.
+      </p>
+
+      <div class="result-card" id="resultCard">
+        <!-- Rempli en JS -->
+      </div>
+
+      <div class="result-actions">
+        <a href="mailto:fabio_lata@icloud.com?subject=Demande%20de%20devis%20LATA%20VISUALS&body=Bonjour%20Fabio%2C%0A%0AJe%20viens%20de%20faire%20le%20quiz%20sur%20votre%20site%20et%20je%20souhaiterais%20en%20discuter.%0A%0A" id="resultMailBtn" class="btn-primary">
+          📩 DEMANDER UN DEVIS
+        </a>
+        <button class="btn-ghost" onclick="resetQuiz()">Refaire le quiz</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // STATE
+  const answers = {
+    profile: null,
+    frequency: null,
+    type: null,
+    budget: null
+  };
+
+  // DRONE POSITIONS (en % de la largeur)
+  const dronePositions = {
+    'welcome': { left: '50%', top: '80px', scale: 1 },
+    'q1': { left: '20%', top: '60px', scale: 0.9 },
+    'q2': { left: '80%', top: '60px', scale: 0.9 },
+    'q3': { left: '30%', top: '80px', scale: 1 },
+    'q4': { left: '70%', top: '60px', scale: 0.9 },
+    'result': { left: '50%', top: '40px', scale: 1.2 }
+  };
+
+  function moveDrone(screen) {
+    const drone = document.getElementById('drone');
+    const pos = dronePositions[screen];
+    if (pos) {
+      drone.style.left = pos.left;
+      drone.style.top = pos.top;
+      drone.style.transform = `translateX(-50%) scale(${pos.scale})`;
+    }
+  }
+
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screenId).classList.add('active');
+    moveDrone(screenId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function startQuiz() {
+    showScreen('q1');
+  }
+
+  function goBack(screenId) {
+    showScreen(screenId);
+  }
+
+  function answer(key, value) {
+    answers[key] = value;
+
+    // Déterminer la prochaine question
+    if (key === 'profile') showScreen('q2');
+    else if (key === 'frequency') showScreen('q3');
+    else if (key === 'type') showScreen('q4');
+    else if (key === 'budget') showResult();
+  }
+
+  function resetQuiz() {
+    Object.keys(answers).forEach(k => answers[k] = null);
+    showScreen('welcome');
+  }
+
+  // ALGORITHME DE RECOMMANDATION
+  function computeRecommendation() {
+    const { profile, frequency, type, budget } = answers;
+
+    // Cas abonnement mensuel : régulier + (club ou entreprise)
+    if (frequency === 'regulier') {
+      if (profile === 'club') {
+        return {
+          type: 'abo',
+          name: 'PACK CLUBS SPORTIFS',
+          badge: 'ABONNEMENT MENSUEL',
+          desc: 'Un accompagnement complet pour faire rayonner votre club sur les réseaux. Idéal pour garder une présence régulière et professionnelle.',
+          features: [
+            '<strong>1 shooting mensuel</strong> (photos + vidéos) de vos tournois et entraînements',
+            '<strong>4 Reels Instagram</strong> montés et optimisés par mois',
+            '<strong>Couverture prioritaire</strong> de vos événements spéciaux',
+            'Accompagnement community management',
+            'Tarif préférentiel fidélité'
+          ],
+          price: '500 - 700€',
+          priceUnit: '/ mois'
+        };
+      }
+      if (budget === 'large') {
+        return {
+          type: 'abo',
+          name: 'ABONNEMENT FULL',
+          badge: 'ABONNEMENT MENSUEL',
+          desc: 'La formule premium pour une présence constante et un contenu haut de gamme. Vous déléguez tout, je m\'occupe de tout.',
+          features: [
+            '<strong>2 shootings mensuels</strong> photo + vidéo',
+            '<strong>8 Reels</strong> montés et optimisés par mois',
+            '<strong>Drone 4K</strong> inclus',
+            'Stratégie de contenu + community management complet',
+            'Priorité absolue sur votre agenda'
+          ],
+          price: '1000 - 1500€',
+          priceUnit: '/ mois'
+        };
+      }
+      if (budget === 'medium') {
+        return {
+          type: 'abo',
+          name: 'ABONNEMENT PRO',
+          badge: 'ABONNEMENT MENSUEL',
+          desc: 'Le bon équilibre pour une entreprise ou une marque qui veut un contenu régulier et qualitatif chaque mois.',
+          features: [
+            '<strong>1 shooting mensuel</strong> photo + vidéo',
+            '<strong>4 Reels montés</strong> par mois',
+            '<strong>Drone 4K</strong> inclus selon besoin',
+            'Conseils stratégie réseaux',
+            'Engagement flexible'
+          ],
+          price: '600 - 800€',
+          priceUnit: '/ mois'
+        };
+      }
+      return {
+        type: 'abo',
+        name: 'ABONNEMENT STARTER',
+        badge: 'ABONNEMENT MENSUEL',
+        desc: 'Pour démarrer sereinement avec un contenu régulier sans exploser votre budget. Idéal pour tester.',
+        features: [
+          '<strong>1 shooting mensuel</strong> (photo OU vidéo)',
+          '<strong>2 Reels</strong> montés par mois',
+          'Flexibilité totale',
+          'Engagement résiliable facilement'
+        ],
+        price: '300 - 400€',
+        priceUnit: '/ mois'
+      };
+    }
+
+    // Cas hésitation
+    if (frequency === 'hesite') {
+      return {
+        type: 'custom',
+        name: 'ÉCHANGEONS ENSEMBLE',
+        badge: 'SUR-MESURE',
+        desc: 'Pas de panique, c\'est normal d\'hésiter. Parlons-en ensemble, je vous conseille sans engagement la formule qui correspond vraiment à votre besoin.',
+        features: [
+          '<strong>Appel découverte gratuit</strong> de 20 minutes',
+          'Analyse de vos besoins spécifiques',
+          'Proposition personnalisée et <strong>sans engagement</strong>',
+          'Conseils concrets même si vous ne signez pas'
+        ],
+        price: 'Gratuit',
+        priceUnit: 'consultation'
+      };
+    }
+
+    // Cas ponctuel : déterminer selon type et budget
+    if (type === 'drone') {
+      if (budget === 'small') {
+        return {
+          type: 'presta',
+          name: 'PRESTATION DRONE',
+          badge: 'PONCTUEL',
+          desc: 'Des images aériennes cinématographiques pour valoriser votre lieu, votre événement ou votre projet.',
+          features: [
+            '<strong>Tournage drone 4K</strong> en D-Log M',
+            '<strong>DJI Mavic 4 Pro</strong> (certifié télépilote pro)',
+            'Montage inclus (vidéo courte)',
+            'Droits d\'utilisation illimités',
+            'Livraison sous 7 jours'
+          ],
+          price: '200 - 300€',
+          priceUnit: 'la prestation'
+        };
+      }
+      return {
+        type: 'presta',
+        name: 'REEL DRONE MONTÉ',
+        badge: 'PONCTUEL',
+        desc: 'Un Reel Instagram aérien qui déchire, pensé pour faire scroller et convertir. Parfait pour capter l\'attention en 30 secondes.',
+        features: [
+          '<strong>Tournage drone 4K</strong> cinématique',
+          '<strong>Montage Reel</strong> dynamique optimisé IG',
+          'Musique libre de droits',
+          'Format 9:16 vertical optimisé',
+          'Livraison rapide'
+        ],
+        price: '150 - 250€',
+        priceUnit: 'le Reel'
+      };
+    }
+
+    if (type === 'photo') {
+      return {
+        type: 'presta',
+        name: 'SHOOTING PHOTO PRO',
+        badge: 'PONCTUEL',
+        desc: 'Des photos professionnelles qui racontent votre histoire. Sport, événement, portrait, produit : je capture le bon moment.',
+        features: [
+          '<strong>Matériel Lumix S5II</strong> (24-70, 70-200, 150-600)',
+          '<strong>Post-production Lightroom</strong> incluse',
+          'Photos livrées en haute résolution',
+          'Spécialité sport & événementiel',
+          'Galerie privée en ligne'
+        ],
+        price: '250 - 400€',
+        priceUnit: 'la prestation'
+      };
+    }
+
+    if (type === 'reel') {
+      return {
+        type: 'presta',
+        name: 'REEL INSTAGRAM MONTÉ',
+        badge: 'PONCTUEL',
+        desc: 'Un Reel qui cartonne, pensé et monté pour faire scroller. Format optimisé 9:16 avec un vrai rythme cinématographique.',
+        features: [
+          '<strong>Tournage vidéo 4K</strong>',
+          '<strong>Montage Final Cut Pro</strong> pro',
+          'Musique libre de droits',
+          'Sous-titres et effets dynamiques',
+          'Livraison sous 5 jours'
+        ],
+        price: '150 - 250€',
+        priceUnit: 'le Reel'
+      };
+    }
+
+    // Type full ou autre
+    if (budget === 'large') {
+      return {
+        type: 'presta',
+        name: 'PACK JOURNÉE COMPLÈTE',
+        badge: 'PONCTUEL PREMIUM',
+        desc: 'L\'expérience totale : je suis avec vous toute la journée avec l\'arsenal complet. Photo, vidéo, drone, montage.',
+        features: [
+          '<strong>Journée complète</strong> de tournage',
+          '<strong>Photo + Vidéo + Drone 4K</strong> inclus',
+          'Montage Reel premium',
+          'Livraison galerie photo + vidéos',
+          'Couverture idéale pour événements'
+        ],
+        price: '800 - 1200€',
+        priceUnit: 'la journée'
+      };
+    }
+
+    return {
+      type: 'presta',
+      name: 'PACK DEMI-JOURNÉE',
+      badge: 'PONCTUEL',
+      desc: 'Le format parfait pour capter l\'essentiel d\'un événement ou d\'une activité. Photo, vidéo et drone au rendez-vous.',
+      features: [
+        '<strong>Demi-journée</strong> de tournage (4h)',
+        '<strong>Photo + Vidéo + Drone</strong> inclus',
+        'Reel de 30s monté',
+        '10 photos retouchées',
+        'Livraison sous 7 jours'
+      ],
+      price: '500 - 700€',
+      priceUnit: 'la demi-journée'
+    };
+  }
+
+  function showResult() {
+    const reco = computeRecommendation();
+
+    // Remplir la carte résultat
+    const card = document.getElementById('resultCard');
+    card.innerHTML = `
+      <div class="result-card-label">${reco.badge}</div>
+      <div class="result-card-name">${reco.name}</div>
+      <div class="result-card-desc">${reco.desc}</div>
+      <div class="result-features">
+        ${reco.features.map(f => `<div class="result-feature">${f}</div>`).join('')}
+      </div>
+      <div class="result-price">${reco.price} <span>${reco.priceUnit}</span></div>
+    `;
+
+    // Remplir le titre et sous-titre
+    const titleMap = {
+      'abo': '✨ VOTRE <span class="gold">ABONNEMENT</span>',
+      'presta': '🎯 VOTRE <span class="gold">PRESTATION</span>',
+      'custom': '🤝 ON <span class="gold">EN PARLE ?</span>'
+    };
+    document.getElementById('resultTitle').innerHTML = titleMap[reco.type] || '✨ VOTRE <span class="gold">FORMULE</span>';
+
+    // Pré-remplir le mail avec le résultat
+    const mailBtn = document.getElementById('resultMailBtn');
+    const body = `Bonjour Fabio,%0A%0AJe viens de faire le quiz sur votre site et ma formule recommandée est : ${reco.name}%0A%0AJe souhaiterais en discuter avec vous.%0A%0AMerci,`;
+    mailBtn.href = `mailto:fabio_lata@icloud.com?subject=Demande%20devis%20-%20${encodeURIComponent(reco.name)}&body=${body}`;
+
+    showScreen('result');
+  }
+</script>
+
+</body>
+</html>
