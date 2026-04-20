@@ -895,6 +895,367 @@
     .footer-socials { justify-content: flex-start; }
     .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
   }
+
+  /* ═══════════════════════════════════════════════════════════ */
+  /*  PREMIUM UPGRADES v2 : vidéo hero, drone scroll, curseur,    */
+  /*  animations au scroll, avant/après                           */
+  /* ═══════════════════════════════════════════════════════════ */
+
+  /* ---- CURSEUR CUSTOM DORÉ ---- */
+  .custom-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: width 0.15s ease, height 0.15s ease, background 0.15s ease;
+    mix-blend-mode: difference;
+  }
+  .custom-cursor-outline {
+    position: fixed;
+    top: 0; left: 0;
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+  }
+  .custom-cursor.hover-target { width: 16px; height: 16px; }
+  .custom-cursor-outline.hover-target {
+    width: 70px; height: 70px;
+    border-color: var(--gold-light);
+    background: rgba(201,168,76,0.08);
+  }
+  @media (hover: none), (max-width: 768px) {
+    .custom-cursor, .custom-cursor-outline { display: none; }
+  }
+
+  /* ---- DRONE QUI SUIT LE SCROLL ---- */
+  .scroll-drone {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    width: 70px;
+    height: 70px;
+    pointer-events: none;
+    z-index: 999;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.6s ease, top 0.8s cubic-bezier(0.4, 0, 0.2, 1), right 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 8px 20px rgba(201,168,76,0.5));
+  }
+  .scroll-drone.visible { opacity: 0.95; }
+  .scroll-drone svg {
+    width: 100%;
+    height: 100%;
+    animation: drone-hover 2.5s ease-in-out infinite;
+  }
+  @keyframes drone-hover {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+  }
+  .scroll-drone .prop {
+    transform-origin: center;
+    animation: spin-prop 0.1s linear infinite;
+  }
+  @keyframes spin-prop {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  /* Lumière du drone (petit halo) */
+  .scroll-drone-light {
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 998;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .scroll-drone-light.visible { opacity: 1; }
+  @media (max-width: 768px) {
+    .scroll-drone, .scroll-drone-light { display: none; }
+  }
+
+  /* ---- HERO VIDÉO BACKGROUND ---- */
+  .hero-video-bg {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+  }
+  .hero-video-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.55;
+  }
+  .hero-video-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, rgba(8,8,8,0.4) 0%, rgba(8,8,8,0.85) 75%, rgba(8,8,8,0.95) 100%),
+      linear-gradient(180deg, rgba(8,8,8,0.3) 0%, rgba(8,8,8,0.75) 100%);
+    z-index: 2;
+  }
+  .hero-video-bg .hero-grid,
+  .hero-video-bg .hero-container {
+    position: relative;
+    z-index: 3;
+  }
+
+  /* Scroll indicator au bas du hero */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: scroll-bounce 2s ease-in-out infinite;
+  }
+  @keyframes scroll-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.8; }
+    50% { transform: translateX(-50%) translateY(6px); opacity: 1; }
+  }
+  .scroll-indicator-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .scroll-indicator-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+  }
+
+  /* ---- ANIMATIONS AU SCROLL ---- */
+  .anim-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .anim-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Fade-up avec delays pour hero */
+  .anim-fade-up {
+    animation: fadeUpAnim 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .anim-delay-1 { animation-delay: 0.15s; }
+  .anim-delay-2 { animation-delay: 0.35s; }
+  .anim-delay-3 { animation-delay: 0.55s; }
+  .anim-delay-4 { animation-delay: 0.75s; }
+  @keyframes fadeUpAnim {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .anim-expand {
+    animation: expandAnim 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.9s both;
+  }
+  @keyframes expandAnim {
+    from { width: 0; opacity: 0; }
+    to { width: 60px; opacity: 1; }
+  }
+
+  /* ---- GALERIE AVANT/APRÈS ---- */
+  .before-after-section {
+    padding: 100px 0;
+    background: var(--black);
+    position: relative;
+  }
+  .ba-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+  }
+  .ba-item {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .ba-compare {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    border-radius: 12px;
+    cursor: ew-resize;
+    user-select: none;
+    background: #000;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .ba-img-after,
+  .ba-img-before {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .ba-img-after img,
+  .ba-img-before img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .ba-img-before {
+    clip-path: inset(0 50% 0 0);
+    will-change: clip-path;
+    transition: clip-path 0.1s ease-out;
+  }
+  .ba-slider {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 100%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 3;
+    will-change: left;
+    transition: left 0.1s ease-out;
+  }
+  .ba-slider-line {
+    width: 100%;
+    height: 100%;
+    background: var(--gold);
+    box-shadow: 0 0 15px rgba(201,168,76,0.6);
+  }
+  .ba-slider-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 20px rgba(201,168,76,0.5);
+    animation: handle-pulse 2s ease-in-out infinite;
+  }
+  @keyframes handle-pulse {
+    0%, 100% { box-shadow: 0 5px 20px rgba(201,168,76,0.5); transform: translate(-50%, -50%) scale(1); }
+    50% { box-shadow: 0 5px 35px rgba(201,168,76,0.9); transform: translate(-50%, -50%) scale(1.08); }
+  }
+  .ba-label {
+    position: absolute;
+    top: 20px;
+    padding: 8px 16px;
+    background: rgba(8,8,8,0.85);
+    border: 1px solid var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .ba-label-before { left: 20px; }
+  .ba-label-after { right: 20px; }
+  .ba-caption {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0 4px;
+  }
+  .ba-caption-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .ba-caption h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .ba-caption p {
+    font-size: 14px;
+    color: #999;
+    line-height: 1.5;
+  }
+  .ba-note {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 15px;
+    color: #bbb;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+  .ba-note strong { color: var(--white); }
+
+  @media (max-width: 768px) {
+    .ba-grid { grid-template-columns: 1fr; }
+    .ba-compare { aspect-ratio: 3/4; }
+  }
+
+  /* ---- Améliorations HOVER des boutons ---- */
+  .btn-primary, .btn-secondary {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
+  }
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+
+  /* Fallback pour prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video { display: none; }
+    .scroll-drone, .scroll-drone-light { display: none; }
+    .anim-on-scroll, .anim-fade-up, .anim-expand {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+      width: 60px !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -914,30 +1275,45 @@
   <a href="#contact" class="nav-cta">Devis</a>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
+<!-- HERO avec vidéo background -->
+<section class="hero hero-video-bg">
+  <!-- Vidéo en background -->
+  <div class="hero-video-wrapper">
+    <video class="hero-video" autoplay muted loop playsinline poster="hero-poster.jpg">
+      <source src="hero-video.webm" type="video/webm">
+      <source src="hero-video.mp4" type="video/mp4">
+    </video>
+    <div class="hero-video-overlay"></div>
+  </div>
+
   <div class="hero-grid"></div>
   <div class="hero-container">
     <img class="hero-logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdvbGRHcmFkRSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNFOEM5N0EiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOUM3RTJFIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KCiAgPGNpcmNsZSBjeD0iMTUwIiBjeT0iMTUwIiByPSIxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGNpcmNsZSBjeD0iMTUwIiBjeT0iMTUwIiByPSIxMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KCiAgPHBhdGggZD0iTSA1MCwxNTAgQSAxMDAsMTAwIDAgMCwxIDk5LDc4IiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTSAyNTAsMTUwIEEgMTAwLDEwMCAwIDAsMSAyMDEsMjIyIiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE1MCwgMTUwKSI+CiAgICA8bGluZSB4MT0iLTQ1IiB5MT0iLTQ1IiB4Mj0iNDUiIHkyPSI0NSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgPGxpbmUgeDE9IjQ1IiB5MT0iLTQ1IiB4Mj0iLTQ1IiB5Mj0iNDUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgIDxjaXJjbGUgY3g9Ii00NSIgY3k9Ii00NSIgcj0iMTQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIyLjMiLz4KICAgIDxjaXJjbGUgY3g9IjQ1IiBjeT0iLTQ1IiByPSIxNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjIuMyIvPgogICAgPGNpcmNsZSBjeD0iLTQ1IiBjeT0iNDUiIHI9IjE0IiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMi4zIi8+CiAgICA8Y2lyY2xlIGN4PSI0NSIgY3k9IjQ1IiByPSIxNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjIuMyIvPgogICAgPGxpbmUgeDE9Ii01NyIgeTE9Ii00NSIgeDI9Ii0zMyIgeTI9Ii00NSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC42Ii8+CiAgICA8bGluZSB4MT0iLTQ1IiB5MT0iLTU3IiB4Mj0iLTQ1IiB5Mj0iLTMzIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSIzMyIgeTE9Ii00NSIgeDI9IjU3IiB5Mj0iLTQ1IiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSI0NSIgeTE9Ii01NyIgeDI9IjQ1IiB5Mj0iLTMzIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSItNTciIHkxPSI0NSIgeDI9Ii0zMyIgeTI9IjQ1IiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSItNDUiIHkxPSIzMyIgeDI9Ii00NSIgeTI9IjU3IiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSIzMyIgeTE9IjQ1IiB4Mj0iNTciIHkyPSI0NSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC42Ii8+CiAgICA8bGluZSB4MT0iNDUiIHkxPSIzMyIgeDI9IjQ1IiB5Mj0iNTciIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNiIvPgogICAgPHJlY3QgeD0iLTE2IiB5PSItMTYiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0idXJsKCNnb2xkR3JhZEUpIiByeD0iMi41Ii8+CiAgICA8Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iOCIgZmlsbD0iIzA4MDgwOCIvPgogICAgPGNpcmNsZSBjeD0iMCIgY3k9IjAiIHI9IjUiIGZpbGw9IiNDOUE4NEMiLz4KICA8L2c+Cjwvc3ZnPgo=" alt="">
-    <div class="hero-eyebrow">Drone · Photo · Contenu</div>
-    <h1 class="hero-title">LATA<br><span class="gold">VISUALS</span></h1>
-    <div class="hero-divider"></div>
-    <p class="hero-hook">
+    <div class="hero-eyebrow anim-fade-up">Drone · Photo · Contenu</div>
+    <h1 class="hero-title anim-fade-up anim-delay-1"><span class="typewriter-text">LATA</span><br><span class="gold typewriter-text-2">VISUALS</span></h1>
+    <div class="hero-divider anim-expand"></div>
+    <p class="hero-hook anim-fade-up anim-delay-2">
       Je capture l'énergie des clubs sportifs et événements de la région PACA.
       Photographe tennis reconverti en <strong>vidéaste drone certifié</strong>,
       je transforme chaque prestation en contenu qui fait monter les vues.
     </p>
-    <div class="hero-buttons">
+    <div class="hero-buttons anim-fade-up anim-delay-3">
       <a href="#contact" class="btn-primary">Demander un devis →</a>
       <a href="quiz-lata-visuals.html" class="btn-secondary">🎯 Faire le quiz</a>
       <a href="drone-experience.html" class="btn-secondary">🚁 Piloter le drone</a>
     </div>
-    <div class="hero-badges">
+    <div class="hero-badges anim-fade-up anim-delay-4">
       <span class="badge">Région PACA</span>
       <span class="badge">Télépilote UAS Pro</span>
       <span class="badge">CM Certifié</span>
       <span class="badge">Livraison 48h</span>
     </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-indicator-text">SCROLL</div>
+    <div class="scroll-indicator-line"></div>
   </div>
 </section>
 
@@ -1128,6 +1504,70 @@
   </div>
 </section>
 
+<!-- AVANT / APRÈS -->
+<section class="section before-after-section" id="before-after">
+  <div class="section-container">
+    <div class="section-eyebrow anim-on-scroll">Le travail de l'ombre</div>
+    <h2 class="section-title anim-on-scroll">Avant · <span class="gold">Après</span></h2>
+    <p class="section-desc anim-on-scroll">
+      Glissez le curseur sur chaque image pour découvrir l'avant / après.
+      <strong>C'est là que se fait la différence.</strong>
+    </p>
+
+    <div class="ba-grid">
+      <!-- Avant/Après 1 -->
+      <div class="ba-item anim-on-scroll">
+        <div class="ba-compare" data-label-before="BRUT" data-label-after="RETOUCHÉ">
+          <div class="ba-img-after"><img src="apres1.jpg" alt="Retouché"></div>
+          <div class="ba-img-before"><img src="avant1.jpg" alt="Brut"></div>
+          <div class="ba-slider">
+            <div class="ba-slider-line"></div>
+            <div class="ba-slider-handle">
+              <svg width="32" height="32" viewBox="0 0 32 32"><path d="M12 8 L8 16 L12 24 M20 8 L24 16 L20 24" stroke="#080808" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="ba-label ba-label-before">AVANT</div>
+          <div class="ba-label ba-label-after">APRÈS</div>
+        </div>
+        <div class="ba-caption">
+          <span class="ba-caption-num">01</span>
+          <div>
+            <h4>Shooting padel · P3 by Marina</h4>
+            <p>Exposition corrigée, couleurs recalibrées, grain cinéma appliqué.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Avant/Après 2 -->
+      <div class="ba-item anim-on-scroll">
+        <div class="ba-compare" data-label-before="BRUT" data-label-after="RETOUCHÉ">
+          <div class="ba-img-after"><img src="apres2.jpg" alt="Retouché"></div>
+          <div class="ba-img-before"><img src="avant2.jpg" alt="Brut"></div>
+          <div class="ba-slider">
+            <div class="ba-slider-line"></div>
+            <div class="ba-slider-handle">
+              <svg width="32" height="32" viewBox="0 0 32 32"><path d="M12 8 L8 16 L12 24 M20 8 L24 16 L20 24" stroke="#080808" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="ba-label ba-label-before">AVANT</div>
+          <div class="ba-label ba-label-after">APRÈS</div>
+        </div>
+        <div class="ba-caption">
+          <span class="ba-caption-num">02</span>
+          <div>
+            <h4>Portrait sport · Lumière naturelle</h4>
+            <p>Luminosité boostée, contraste affiné, ambiance sublimée.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ba-note anim-on-scroll">
+      Chaque photo brute sortie du boîtier passe par ma post-production. C'est là que tout se joue : <strong>la différence entre une photo et une image qu'on veut partager.</strong>
+    </p>
+  </div>
+</section>
+
 <!-- PLANS -->
 <section class="section plans" id="plans">
   <div class="section-container">
@@ -1288,6 +1728,297 @@
     </div>
   </div>
 </footer>
+
+<!-- CURSEUR CUSTOM -->
+<div class="custom-cursor-outline" id="cursorOutline"></div>
+<div class="custom-cursor" id="cursorDot"></div>
+
+<!-- DRONE QUI SUIT LE SCROLL -->
+<div class="scroll-drone-light" id="droneLight"></div>
+<div class="scroll-drone" id="scrollDrone">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="12" fill="#C9A84C"/>
+    <circle cx="50" cy="50" r="8" fill="#080808"/>
+    <circle cx="50" cy="50" r="4" fill="#C9A84C"/>
+    <line x1="50" y1="50" x2="20" y2="25" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="80" y2="25" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="20" y2="75" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="80" y2="75" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="20" cy="25" r="6" fill="#8B6F2E"/>
+    <circle cx="80" cy="25" r="6" fill="#8B6F2E"/>
+    <circle cx="20" cy="75" r="6" fill="#8B6F2E"/>
+    <circle cx="80" cy="75" r="6" fill="#8B6F2E"/>
+    <g class="prop" style="transform-origin: 20px 25px;">
+      <ellipse cx="20" cy="25" rx="16" ry="1.8" fill="#C9A84C" opacity="0.7"/>
+      <ellipse cx="20" cy="25" rx="1.8" ry="16" fill="#C9A84C" opacity="0.7"/>
+    </g>
+    <g class="prop" style="transform-origin: 80px 25px;">
+      <ellipse cx="80" cy="25" rx="16" ry="1.8" fill="#C9A84C" opacity="0.7"/>
+      <ellipse cx="80" cy="25" rx="1.8" ry="16" fill="#C9A84C" opacity="0.7"/>
+    </g>
+    <g class="prop" style="transform-origin: 20px 75px;">
+      <ellipse cx="20" cy="75" rx="16" ry="1.8" fill="#C9A84C" opacity="0.7"/>
+      <ellipse cx="20" cy="75" rx="1.8" ry="16" fill="#C9A84C" opacity="0.7"/>
+    </g>
+    <g class="prop" style="transform-origin: 80px 75px;">
+      <ellipse cx="80" cy="75" rx="16" ry="1.8" fill="#C9A84C" opacity="0.7"/>
+      <ellipse cx="80" cy="75" rx="1.8" ry="16" fill="#C9A84C" opacity="0.7"/>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ═══════════════════════════════════════════════════════
+  //  1. CURSEUR CUSTOM DORÉ
+  // ═══════════════════════════════════════════════════════
+  const cursorDot = document.getElementById('cursorDot');
+  const cursorOutline = document.getElementById('cursorOutline');
+
+  if (cursorDot && cursorOutline && window.matchMedia('(hover: hover)').matches) {
+    let mouseX = 0, mouseY = 0;
+    let outlineX = 0, outlineY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+    });
+
+    // Animation fluide du contour avec lag
+    function animateOutline() {
+      outlineX += (mouseX - outlineX) * 0.15;
+      outlineY += (mouseY - outlineY) * 0.15;
+      cursorOutline.style.left = outlineX + 'px';
+      cursorOutline.style.top = outlineY + 'px';
+      requestAnimationFrame(animateOutline);
+    }
+    animateOutline();
+
+    // Hover sur éléments interactifs
+    const hoverTargets = document.querySelectorAll('a, button, .btn-primary, .btn-secondary, .service-card, .plan-card, .ba-compare, .badge, input, textarea, [onclick], .nav-link, .nav-cta');
+    hoverTargets.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorDot.classList.add('hover-target');
+        cursorOutline.classList.add('hover-target');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorDot.classList.remove('hover-target');
+        cursorOutline.classList.remove('hover-target');
+      });
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  2. DRONE QUI SUIT LE SCROLL
+  // ═══════════════════════════════════════════════════════
+  const scrollDrone = document.getElementById('scrollDrone');
+  const droneLight = document.getElementById('droneLight');
+
+  if (scrollDrone && window.matchMedia('(min-width: 769px)').matches) {
+    const sections = document.querySelectorAll('section');
+    let lastScrollY = 0;
+
+    function updateDronePosition() {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+
+      // Afficher le drone seulement après le hero
+      if (scrollY > viewportHeight * 0.5) {
+        scrollDrone.classList.add('visible');
+        droneLight.classList.add('visible');
+      } else {
+        scrollDrone.classList.remove('visible');
+        droneLight.classList.remove('visible');
+        return;
+      }
+
+      // Le drone alterne côté gauche/droit selon la section visible
+      let targetSide = 'right';
+      let targetTop = '50%';
+
+      sections.forEach((section, idx) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < viewportHeight * 0.5 && rect.bottom > viewportHeight * 0.5) {
+          // Section actuellement au centre
+          targetSide = (idx % 2 === 0) ? 'right' : 'left';
+          // Position verticale selon la progression dans la section
+          const progress = (viewportHeight * 0.5 - rect.top) / rect.height;
+          targetTop = (20 + progress * 60) + '%';
+        }
+      });
+
+      // Appliquer position
+      if (targetSide === 'right') {
+        scrollDrone.style.right = '40px';
+        scrollDrone.style.left = 'auto';
+      } else {
+        scrollDrone.style.left = '40px';
+        scrollDrone.style.right = 'auto';
+      }
+      scrollDrone.style.top = targetTop;
+
+      // Lumière du drone (suit en décalé)
+      const droneRect = scrollDrone.getBoundingClientRect();
+      droneLight.style.left = (droneRect.left + droneRect.width / 2) + 'px';
+      droneLight.style.top = (droneRect.top + droneRect.height / 2) + 'px';
+
+      lastScrollY = scrollY;
+    }
+
+    window.addEventListener('scroll', updateDronePosition, { passive: true });
+    window.addEventListener('resize', updateDronePosition);
+    updateDronePosition();
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  3. ANIMATIONS AU SCROLL (Intersection Observer)
+  // ═══════════════════════════════════════════════════════
+  const animatedElements = document.querySelectorAll('.anim-on-scroll');
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
+    });
+    animatedElements.forEach(el => observer.observe(el));
+  } else {
+    animatedElements.forEach(el => el.classList.add('is-visible'));
+  }
+
+  // Auto-ajouter .anim-on-scroll aux sections principales
+  document.querySelectorAll('.section-title, .section-eyebrow, .section-desc, .service-card, .plan-card, .about-text, .about-stats, .contact-info, .contact-form').forEach(el => {
+    if (!el.classList.contains('anim-on-scroll')) {
+      el.classList.add('anim-on-scroll');
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+        obs.observe(el);
+      } else {
+        el.classList.add('is-visible');
+      }
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  4. GALERIE AVANT/APRÈS INTERACTIVE
+  // ═══════════════════════════════════════════════════════
+  const baCompares = document.querySelectorAll('.ba-compare');
+
+  baCompares.forEach(container => {
+    const imgBefore = container.querySelector('.ba-img-before');
+    const slider = container.querySelector('.ba-slider');
+
+    if (!imgBefore || !slider) return;
+
+    let isDragging = false;
+
+    function updatePosition(clientX) {
+      const rect = container.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const percent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+
+      imgBefore.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+      slider.style.left = percent + '%';
+    }
+
+    // Souris
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      updatePosition(e.clientX);
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) updatePosition(e.clientX);
+    });
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    // Hover simple (bouger sans cliquer)
+    container.addEventListener('mousemove', (e) => {
+      if (!isDragging) updatePosition(e.clientX);
+    });
+
+    // Touch (mobile)
+    container.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      updatePosition(e.touches[0].clientX);
+    }, { passive: true });
+    container.addEventListener('touchmove', (e) => {
+      if (isDragging) {
+        updatePosition(e.touches[0].clientX);
+      }
+    }, { passive: true });
+    container.addEventListener('touchend', () => { isDragging = false; });
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  5. PARALLAXE SUBTILE SUR HERO
+  // ═══════════════════════════════════════════════════════
+  const heroVideo = document.querySelector('.hero-video');
+  const heroContainer = document.querySelector('.hero-container');
+  if (heroVideo && heroContainer) {
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const heroHeight = document.querySelector('.hero-video-bg')?.offsetHeight || window.innerHeight;
+      if (scrollY < heroHeight) {
+        const progress = scrollY / heroHeight;
+        heroVideo.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.3}px)) scale(${1 + progress * 0.1})`;
+        heroContainer.style.transform = `translateY(${scrollY * 0.2}px)`;
+        heroContainer.style.opacity = 1 - progress * 1.2;
+      }
+    }, { passive: true });
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  6. HINT au 1er chargement sur l'avant/après
+  // ═══════════════════════════════════════════════════════
+  const firstBA = document.querySelector('.ba-compare');
+  if (firstBA) {
+    const baObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const before = entry.target.querySelector('.ba-img-before');
+          const slider = entry.target.querySelector('.ba-slider');
+          // Mini-animation pour montrer qu'on peut slider
+          let pos = 50;
+          const interval = setInterval(() => {
+            pos += 2;
+            if (pos > 70) { clearInterval(interval); animateBack(); }
+            if (before) before.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
+            if (slider) slider.style.left = pos + '%';
+          }, 30);
+          function animateBack() {
+            const backInt = setInterval(() => {
+              pos -= 2;
+              if (pos < 50) { clearInterval(backInt); }
+              if (before) before.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
+              if (slider) slider.style.left = pos + '%';
+            }, 30);
+          }
+          baObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    baObserver.observe(firstBA);
+  }
+})();
+</script>
 
 </body>
 </html>
