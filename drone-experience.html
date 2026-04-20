@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilotez le drone — LATA VISUALS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: #8B6F2E;
+    --black: #080808;
+    --black-2: #121212;
+    --white: #F5F0E8;
+    --grey: #888;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+    cursor: none;
+  }
+
+  /* BACKGROUND STAGE */
+  .stage {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      var(--black);
+  }
+
+  /* GRID animé qui bouge lentement */
+  .grid-bg {
+    position: fixed;
+    inset: -50px;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.06) 1px, transparent 1px);
+    background-size: 80px 80px;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove {
+    from { transform: translate(0, 0); }
+    to { transform: translate(80px, 80px); }
+  }
+
+  /* Scan lines effet drone */
+  .scan-line {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
+    animation: scan 4s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scan {
+    from { top: -5%; }
+    to { top: 105%; }
+  }
+
+  /* HUD coins */
+  .hud-corner {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    border-color: var(--gold);
+    pointer-events: none;
+    z-index: 10;
+  }
+  .hud-corner.tl {
+    top: 30px;
+    left: 30px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+  }
+  .hud-corner.tr {
+    top: 30px;
+    right: 30px;
+    border-top: 2px solid;
+    border-right: 2px solid;
+  }
+  .hud-corner.bl {
+    bottom: 30px;
+    left: 30px;
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+  }
+  .hud-corner.br {
+    bottom: 30px;
+    right: 30px;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+  }
+
+  /* HUD info */
+  .hud-top {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 10;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+  .hud-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 4px;
+  }
+  .hud-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+  }
+
+  .hud-bottom {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.7;
+    text-align: center;
+  }
+  .hud-bottom strong {
+    color: var(--white);
+  }
+
+  /* INTRO OVERLAY */
+  .intro {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 8, 8, 0.95);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.8s ease;
+  }
+  .intro.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .intro-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 40px;
+  }
+  .intro-eyebrow {
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .intro-eyebrow::before,
+  .intro-eyebrow::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .intro-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 9vw, 90px);
+    letter-spacing: 4px;
+    line-height: 0.9;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+  .intro-title .gold { color: var(--gold); }
+  .intro-divider {
+    width: 80px;
+    height: 2px;
+    background: var(--gold);
+    margin: 24px auto;
+  }
+  .intro-desc {
+    font-size: 17px;
+    color: #bbb;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+  .intro-desc strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+  .intro-controls {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .intro-controls div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .key-mouse {
+    width: 32px;
+    height: 42px;
+    border: 2px solid var(--gold);
+    border-radius: 20px 20px 8px 8px;
+    position: relative;
+  }
+  .key-mouse::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 10px;
+    background: var(--gold);
+  }
+  .intro-start {
+    display: inline-block;
+    padding: 18px 50px;
+    background: var(--gold);
+    color: var(--black);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 5px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(201,168,76,0.3);
+  }
+  .intro-start:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(201,168,76,0.5);
+    background: var(--gold-light);
+  }
+  .intro-tip {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #777;
+    letter-spacing: 1px;
+  }
+
+  /* DRONE qui suit la souris */
+  .drone-cursor {
+    position: fixed;
+    width: 70px;
+    height: 70px;
+    pointer-events: none;
+    z-index: 50;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 8px 20px rgba(201,168,76,0.5));
+  }
+  .drone-cursor svg {
+    width: 100%;
+    height: 100%;
+    animation: drone-hover 2s ease-in-out infinite;
+  }
+  @keyframes drone-hover {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  .prop {
+    transform-origin: center;
+    animation: spin 0.08s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Projecteur / lumière du drone */
+  .drone-light {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+  }
+
+  /* ZONES À EXPLORER */
+  .zones {
+    position: fixed;
+    inset: 0;
+    z-index: 6;
+  }
+  .zone {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    transition: all 0.5s ease;
+    opacity: 0.3;
+  }
+  .zone.active {
+    opacity: 1;
+  }
+  .zone-marker {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    background: rgba(201,168,76,0.08);
+    position: relative;
+    animation: zone-pulse 2s ease-in-out infinite;
+  }
+  @keyframes zone-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.4); }
+    50% { box-shadow: 0 0 0 20px rgba(201,168,76,0); }
+  }
+  .zone.active .zone-marker {
+    background: var(--gold);
+    border-color: var(--gold-light);
+    transform: scale(1.2);
+  }
+  .zone-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .zone-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .zone-desc {
+    font-size: 13px;
+    color: #aaa;
+    max-width: 220px;
+    margin: 0 auto;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .zone.active .zone-desc {
+    opacity: 1;
+  }
+  .zone-price {
+    margin-top: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .zone.active .zone-price {
+    opacity: 1;
+  }
+
+  /* Position des 4 zones */
+  .zone-1 { top: 25%; left: 20%; }
+  .zone-2 { top: 25%; right: 20%; transform: translate(50%, -50%); }
+  .zone-3 { bottom: 30%; left: 25%; }
+  .zone-4 { bottom: 30%; right: 25%; transform: translate(50%, 50%); }
+
+  /* CONTACT popup quand on a exploré les 4 zones */
+  .contact-popup {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--black-2);
+    border: 1px solid var(--gold);
+    border-radius: 50px;
+    padding: 18px 36px;
+    z-index: 20;
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 20px 60px rgba(201,168,76,0.3);
+    cursor: pointer;
+    pointer-events: none;
+  }
+  .contact-popup.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  .contact-popup a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--white);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    text-decoration: none;
+  }
+  .contact-popup a:hover {
+    color: var(--gold);
+  }
+
+  /* BACK BUTTON */
+  .back-btn {
+    position: fixed;
+    top: 40px;
+    left: 30px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    padding: 10px 18px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+    z-index: 15;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .back-btn:hover {
+    background: rgba(201,168,76,0.1);
+    color: var(--white);
+  }
+
+  /* Mobile warning */
+  .mobile-warning {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    .drone-cursor, .drone-light, .hud-corner { display: none; }
+    html, body { cursor: default; overflow: auto; }
+    .zones { display: none; }
+    .mobile-warning {
+      display: flex;
+      position: fixed;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+      z-index: 200;
+      background: var(--black);
+    }
+    .mobile-warning-content h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 40px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .mobile-warning-content p {
+      color: #bbb;
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 30px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="grid-bg"></div>
+  <div class="scan-line"></div>
+</div>
+
+<!-- HUD -->
+<div class="hud-corner tl"></div>
+<div class="hud-corner tr"></div>
+<div class="hud-corner bl"></div>
+<div class="hud-corner br"></div>
+
+<div class="hud-top">
+  <div class="hud-badge">
+    <div class="hud-dot"></div>
+    <span>LATA VISUALS · DRONE MODE</span>
+  </div>
+  <div class="hud-badge">
+    <span id="explored-count">0 / 4 ZONES</span>
+  </div>
+</div>
+
+<a href="index.html" class="back-btn">← Retour au site</a>
+
+<div class="hud-bottom">
+  <span>SURVOLEZ LES ZONES POUR DÉCOUVRIR · <strong>4 FORMULES</strong> À EXPLORER</span>
+</div>
+
+<!-- INTRO SCREEN -->
+<div class="intro" id="intro">
+  <div class="intro-content">
+    <div class="intro-eyebrow">Mode exploration</div>
+    <h1 class="intro-title">PILOTEZ <span class="gold">LE DRONE</span></h1>
+    <div class="intro-divider"></div>
+    <p class="intro-desc">
+      Explorez mes services en <strong>pilotant le drone</strong>.<br>
+      Survolez chaque zone pour découvrir une formule.<br>
+      Trouvez les 4 zones et contactez-moi.
+    </p>
+    <div class="intro-controls">
+      <div>
+        <div class="key-mouse"></div>
+        <span>Souris pour piloter</span>
+      </div>
+    </div>
+    <button class="intro-start" onclick="startExperience()">
+      DÉCOLLAGE →
+    </button>
+    <p class="intro-tip">Expérience optimale sur ordinateur</p>
+  </div>
+</div>
+
+<!-- LUMIÈRE DU DRONE -->
+<div class="drone-light" id="droneLight"></div>
+
+<!-- DRONE CURSEUR -->
+<div class="drone-cursor" id="drone">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="12" fill="#C9A84C"/>
+    <circle cx="50" cy="50" r="8" fill="#080808"/>
+    <circle cx="50" cy="50" r="4" fill="#C9A84C"/>
+    <line x1="50" y1="50" x2="20" y2="25" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="80" y2="25" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="20" y2="75" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="80" y2="75" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="20" cy="25" r="6" fill="#8B6F2E"/>
+    <circle cx="80" cy="25" r="6" fill="#8B6F2E"/>
+    <circle cx="20" cy="75" r="6" fill="#8B6F2E"/>
+    <circle cx="80" cy="75" r="6" fill="#8B6F2E"/>
+    <g class="prop" style="transform-origin: 20px 25px;">
+      <ellipse cx="20" cy="25" rx="16" ry="1.8" fill="#C9A84C" opacity="0.7"/>
+      <ellipse cx="20" cy="25" rx="1.8" ry="16" fill="#C9A84C" opacity="0.7"/>
+    </g>
+    <g class="prop" style="transform-origin: 80px 25px;">
+      <ellipse cx="80" cy="25" rx="16" ry="1.8" fill="#C9A84C" opacity="0.7"/>
+      <ellipse cx="80" cy="25" rx="1.8" ry="16" fill="#C9A84C" opacity="0.7"/>
+    </g>
+    <g class="prop" style="transform-origin: 20px 75px;">
+      <ellipse cx="20" cy="75" rx="16" ry="1.8" fill="#C9A84C" opacity="0.7"/>
+      <ellipse cx="20" cy="75" rx="1.8" ry="16" fill="#C9A84C" opacity="0.7"/>
+    </g>
+    <g class="prop" style="transform-origin: 80px 75px;">
+      <ellipse cx="80" cy="75" rx="16" ry="1.8" fill="#C9A84C" opacity="0.7"/>
+      <ellipse cx="80" cy="75" rx="1.8" ry="16" fill="#C9A84C" opacity="0.7"/>
+    </g>
+  </svg>
+</div>
+
+<!-- ZONES À EXPLORER -->
+<div class="zones">
+  <div class="zone zone-1" data-zone="1">
+    <div class="zone-marker">🚁</div>
+    <div class="zone-label">FORMULE 01</div>
+    <div class="zone-title">DRONE 4K</div>
+    <div class="zone-desc">Tournages aériens cinématographiques pour événements, lieux et projets.</div>
+    <div class="zone-price">200 - 300€</div>
+  </div>
+
+  <div class="zone zone-2" data-zone="2">
+    <div class="zone-marker">📸</div>
+    <div class="zone-label">FORMULE 02</div>
+    <div class="zone-title">PHOTO PRO</div>
+    <div class="zone-desc">Shootings sport, événementiels et portraits avec matériel full frame pro.</div>
+    <div class="zone-price">250 - 400€</div>
+  </div>
+
+  <div class="zone zone-3" data-zone="3">
+    <div class="zone-marker">🎬</div>
+    <div class="zone-label">FORMULE 03</div>
+    <div class="zone-title">REEL INSTAGRAM</div>
+    <div class="zone-desc">Vidéo courte montée 9:16, rythme optimisé pour faire scroller.</div>
+    <div class="zone-price">150 - 250€</div>
+  </div>
+
+  <div class="zone zone-4" data-zone="4">
+    <div class="zone-marker">✨</div>
+    <div class="zone-label">FORMULE 04</div>
+    <div class="zone-title">PACK JOURNÉE</div>
+    <div class="zone-desc">Photo + vidéo + drone + montage. Le combo total pour un event complet.</div>
+    <div class="zone-price">800 - 1200€</div>
+  </div>
+</div>
+
+<!-- CONTACT POPUP -->
+<div class="contact-popup" id="contactPopup">
+  <a href="mailto:fabio_lata@icloud.com?subject=Demande%20de%20devis%20LATA%20VISUALS">
+    ✨ MISSION ACCOMPLIE · ME CONTACTER
+  </a>
+</div>
+
+<!-- MOBILE WARNING -->
+<div class="mobile-warning">
+  <div class="mobile-warning-content">
+    <h2>🚁 PILOTAGE SUR PC</h2>
+    <p>L'expérience de pilotage du drone est optimisée pour ordinateur.<br><br>Reviens sur ton ordi pour la tester, ou <a href="quiz-lata-visuals.html" style="color: var(--gold);">fais le quiz</a> en attendant.</p>
+    <a href="index.html" style="color: var(--gold); text-decoration: none; border: 1px solid var(--gold); padding: 12px 24px; border-radius: 30px; display: inline-block; margin-top: 20px;">← Retour au site</a>
+  </div>
+</div>
+
+<script>
+  const drone = document.getElementById('drone');
+  const droneLight = document.getElementById('droneLight');
+  const intro = document.getElementById('intro');
+  const zones = document.querySelectorAll('.zone');
+  const contactPopup = document.getElementById('contactPopup');
+  const exploredCount = document.getElementById('explored-count');
+
+  const exploredZones = new Set();
+
+  function startExperience() {
+    intro.classList.add('hidden');
+  }
+
+  // Suivre la souris
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let droneX = mouseX;
+  let droneY = mouseY;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    // Inclinaison du drone selon la vitesse
+    const deltaX = mouseX - droneX;
+    const tilt = Math.max(-15, Math.min(15, deltaX / 4));
+
+    drone.style.transform = `rotate(${tilt}deg)`;
+
+    // Position drone + lumière
+    drone.style.left = (mouseX - 35) + 'px';
+    drone.style.top = (mouseY - 35) + 'px';
+    droneLight.style.left = mouseX + 'px';
+    droneLight.style.top = mouseY + 'px';
+
+    // Check proximité aux zones
+    zones.forEach(zone => {
+      const rect = zone.getBoundingClientRect();
+      const zoneCenterX = rect.left + rect.width / 2;
+      const zoneCenterY = rect.top + rect.height / 2;
+      const distance = Math.sqrt(
+        Math.pow(mouseX - zoneCenterX, 2) +
+        Math.pow(mouseY - zoneCenterY, 2)
+      );
+
+      if (distance < 180) {
+        zone.classList.add('active');
+        const zoneId = zone.dataset.zone;
+        if (!exploredZones.has(zoneId)) {
+          exploredZones.add(zoneId);
+          updateExploredCount();
+        }
+      } else {
+        zone.classList.remove('active');
+      }
+    });
+
+    droneX = mouseX;
+    droneY = mouseY;
+  });
+
+  function updateExploredCount() {
+    const count = exploredZones.size;
+    exploredCount.textContent = `${count} / 4 ZONES`;
+
+    if (count === 4) {
+      contactPopup.classList.add('visible');
+    }
+  }
+
+  // Position initiale du drone au centre
+  drone.style.left = (mouseX - 35) + 'px';
+  drone.style.top = (mouseY - 35) + 'px';
+  droneLight.style.left = mouseX + 'px';
+  droneLight.style.top = mouseY + 'px';
+</script>
+
+</body>
+</html>
