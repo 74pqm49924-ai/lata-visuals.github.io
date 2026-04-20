@@ -284,6 +284,117 @@
     margin-bottom: 60px;
   }
 
+  /* QUIZ CTA SECTION */
+  .quiz-cta {
+    padding: 80px 0;
+    background: var(--black);
+  }
+  .quiz-cta-box {
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.02) 100%);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 24px;
+    padding: 50px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 50px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .quiz-cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .quiz-cta-left {
+    position: relative;
+    z-index: 2;
+  }
+  .quiz-cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 4vw, 48px);
+    letter-spacing: 3px;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 20px;
+    margin-top: 16px;
+  }
+  .quiz-cta-title .gold { color: var(--gold); }
+  .quiz-cta-text {
+    font-size: 15px;
+    color: #bbb;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 450px;
+  }
+  .quiz-cta-btn {
+    font-size: 14px;
+    padding: 16px 32px;
+  }
+  .quiz-cta-right {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+  .quiz-cta-drone {
+    font-size: 110px;
+    line-height: 1;
+    animation: float-drone 3s ease-in-out infinite;
+  }
+  @keyframes float-drone {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+  }
+  .quiz-cta-stats {
+    display: flex;
+    gap: 20px;
+  }
+  .quiz-cta-stat {
+    text-align: center;
+    padding: 14px 18px;
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 12px;
+    min-width: 85px;
+  }
+  .quiz-cta-stat-num {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .quiz-cta-stat-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #999;
+    text-transform: uppercase;
+  }
+  @media (max-width: 768px) {
+    .quiz-cta-box {
+      grid-template-columns: 1fr;
+      padding: 35px 25px;
+      gap: 30px;
+    }
+    .quiz-cta-right {
+      order: -1;
+    }
+    .quiz-cta-drone {
+      font-size: 80px;
+    }
+  }
+
   /* ABOUT */
   .about {
     background: var(--dark);
@@ -700,13 +811,47 @@
     </p>
     <div class="hero-buttons">
       <a href="#contact" class="btn-primary">Demander un devis →</a>
-      <a href="#services" class="btn-secondary">Voir mes services</a>
+      <a href="quiz-lata-visuals.html" class="btn-secondary">🎯 Faire le quiz</a>
     </div>
     <div class="hero-badges">
       <span class="badge">Région PACA</span>
       <span class="badge">Télépilote UAS Pro</span>
       <span class="badge">CM Certifié</span>
       <span class="badge">Livraison 48h</span>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ CTA -->
+<section class="section quiz-cta" id="quiz-cta">
+  <div class="section-container">
+    <div class="quiz-cta-box">
+      <div class="quiz-cta-left">
+        <div class="section-eyebrow">Pas sûr de ce qu'il vous faut ?</div>
+        <h2 class="quiz-cta-title">Trouvez votre <span class="gold">formule idéale</span><br>en 60 secondes.</h2>
+        <p class="quiz-cta-text">
+          4 questions simples. Une recommandation personnalisée.
+          Aucun engagement. Je vous guide vers la prestation qui correspond à votre besoin et votre budget.
+        </p>
+        <a href="quiz-lata-visuals.html" class="btn-primary quiz-cta-btn">🎯 Lancer le quiz →</a>
+      </div>
+      <div class="quiz-cta-right">
+        <div class="quiz-cta-drone">🚁</div>
+        <div class="quiz-cta-stats">
+          <div class="quiz-cta-stat">
+            <span class="quiz-cta-stat-num">4</span>
+            <span class="quiz-cta-stat-label">Questions</span>
+          </div>
+          <div class="quiz-cta-stat">
+            <span class="quiz-cta-stat-num">60s</span>
+            <span class="quiz-cta-stat-label">Durée</span>
+          </div>
+          <div class="quiz-cta-stat">
+            <span class="quiz-cta-stat-num">100%</span>
+            <span class="quiz-cta-stat-label">Gratuit</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -892,7 +1037,7 @@
         <input type="hidden" name="_subject" value="Nouveau devis - LATA VISUALS">
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_next" value="https://74pqm49924-ai.github.io/lata-visuals.github.io/merci.html">
+        <input type="hidden" name="_next" value="https://latavisuals.fr/merci.html">
 
         <div class="form-row">
           <div class="form-group">
