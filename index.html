@@ -395,6 +395,124 @@
     }
   }
 
+  /* DRONE EXPERIENCE CTA SECTION */
+  .drone-exp-cta {
+    padding: 80px 0;
+    background: linear-gradient(180deg, var(--black) 0%, var(--dark) 100%);
+  }
+  .drone-exp-box {
+    background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, rgba(201,168,76,0.01) 100%);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 24px;
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .drone-exp-box::before {
+    content: '';
+    position: absolute;
+    top: -80%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .drone-exp-left {
+    position: relative;
+    z-index: 2;
+  }
+  .drone-exp-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 4vw, 52px);
+    letter-spacing: 3px;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 20px;
+    margin-top: 16px;
+  }
+  .drone-exp-title .gold { color: var(--gold); }
+  .drone-exp-text {
+    font-size: 15px;
+    color: #bbb;
+    line-height: 1.7;
+    margin-bottom: 30px;
+    max-width: 500px;
+  }
+  .drone-exp-text strong { color: var(--white); }
+  .drone-exp-btn {
+    font-size: 14px;
+    padding: 16px 32px;
+  }
+  .drone-exp-note {
+    font-size: 11px;
+    color: var(--grey);
+    letter-spacing: 1px;
+    margin-top: 16px;
+  }
+  .drone-exp-right {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+  .drone-exp-visual {
+    width: 180px;
+    height: 180px;
+    animation: drone-float 3s ease-in-out infinite;
+  }
+  @keyframes drone-float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-15px) rotate(3deg); }
+  }
+  @keyframes prop-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .drone-exp-features {
+    display: flex;
+    gap: 16px;
+  }
+  .drone-exp-feature {
+    text-align: center;
+    padding: 14px 18px;
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 12px;
+    min-width: 100px;
+  }
+  .drone-exp-feature-num {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .drone-exp-feature-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #999;
+    text-transform: uppercase;
+  }
+  @media (max-width: 768px) {
+    .drone-exp-box {
+      grid-template-columns: 1fr;
+      padding: 35px 25px;
+      gap: 30px;
+    }
+    .drone-exp-right { order: -1; }
+    .drone-exp-visual { width: 140px; height: 140px; }
+  }
+
   /* ABOUT */
   .about {
     background: var(--dark);
@@ -812,6 +930,7 @@
     <div class="hero-buttons">
       <a href="#contact" class="btn-primary">Demander un devis →</a>
       <a href="quiz-lata-visuals.html" class="btn-secondary">🎯 Faire le quiz</a>
+      <a href="drone-experience.html" class="btn-secondary">🚁 Piloter le drone</a>
     </div>
     <div class="hero-badges">
       <span class="badge">Région PACA</span>
@@ -849,6 +968,68 @@
           <div class="quiz-cta-stat">
             <span class="quiz-cta-stat-num">100%</span>
             <span class="quiz-cta-stat-label">Gratuit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DRONE EXPERIENCE CTA -->
+<section class="section drone-exp-cta">
+  <div class="section-container">
+    <div class="drone-exp-box">
+      <div class="drone-exp-left">
+        <div class="section-eyebrow">Mode exploration</div>
+        <h2 class="drone-exp-title">Et si vous <span class="gold">pilotiez</span><br>un drone ?</h2>
+        <p class="drone-exp-text">
+          Une expérience immersive unique. Prenez les commandes du drone, explorez l'écran pour découvrir mes 4 formules, et contactez-moi à la fin de votre mission.
+          <br><br>
+          <strong>Parce qu'un drone, ça se pilote. Pas juste une formule qui se choisit.</strong>
+        </p>
+        <a href="drone-experience.html" class="btn-primary drone-exp-btn">🚁 Prendre les commandes →</a>
+        <p class="drone-exp-note">💻 Expérience optimisée sur ordinateur</p>
+      </div>
+      <div class="drone-exp-right">
+        <div class="drone-exp-visual">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="12" fill="#C9A84C"/>
+            <circle cx="100" cy="100" r="8" fill="#080808"/>
+            <circle cx="100" cy="100" r="4" fill="#C9A84C"/>
+            <line x1="100" y1="100" x2="40" y2="50" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+            <line x1="100" y1="100" x2="160" y2="50" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+            <line x1="100" y1="100" x2="40" y2="150" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+            <line x1="100" y1="100" x2="160" y2="150" stroke="#C9A84C" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="40" cy="50" r="8" fill="#8B6F2E"/>
+            <circle cx="160" cy="50" r="8" fill="#8B6F2E"/>
+            <circle cx="40" cy="150" r="8" fill="#8B6F2E"/>
+            <circle cx="160" cy="150" r="8" fill="#8B6F2E"/>
+            <g style="transform-origin: 40px 50px; animation: prop-spin 0.1s linear infinite;">
+              <ellipse cx="40" cy="50" rx="18" ry="2" fill="#C9A84C" opacity="0.7"/>
+              <ellipse cx="40" cy="50" rx="2" ry="18" fill="#C9A84C" opacity="0.7"/>
+            </g>
+            <g style="transform-origin: 160px 50px; animation: prop-spin 0.1s linear infinite;">
+              <ellipse cx="160" cy="50" rx="18" ry="2" fill="#C9A84C" opacity="0.7"/>
+              <ellipse cx="160" cy="50" rx="2" ry="18" fill="#C9A84C" opacity="0.7"/>
+            </g>
+            <g style="transform-origin: 40px 150px; animation: prop-spin 0.1s linear infinite;">
+              <ellipse cx="40" cy="150" rx="18" ry="2" fill="#C9A84C" opacity="0.7"/>
+              <ellipse cx="40" cy="150" rx="2" ry="18" fill="#C9A84C" opacity="0.7"/>
+            </g>
+            <g style="transform-origin: 160px 150px; animation: prop-spin 0.1s linear infinite;">
+              <ellipse cx="160" cy="150" rx="18" ry="2" fill="#C9A84C" opacity="0.7"/>
+              <ellipse cx="160" cy="150" rx="2" ry="18" fill="#C9A84C" opacity="0.7"/>
+            </g>
+          </svg>
+        </div>
+        <div class="drone-exp-features">
+          <div class="drone-exp-feature">
+            <span class="drone-exp-feature-num">4</span>
+            <span class="drone-exp-feature-label">Zones à explorer</span>
+          </div>
+          <div class="drone-exp-feature">
+            <span class="drone-exp-feature-num">100%</span>
+            <span class="drone-exp-feature-label">Immersif</span>
           </div>
         </div>
       </div>
