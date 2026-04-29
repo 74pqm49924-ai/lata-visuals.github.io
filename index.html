@@ -1406,6 +1406,130 @@
   letter-spacing: 0.02em;
 }
 
+
+/* ═════ SCROLL PROGRESS BAR ═════ */
+#scroll-progress {
+  position: fixed; top: 0; left: 0; width: 0%; height: 2px; z-index: 10000;
+  background: linear-gradient(90deg, #C9A84C, #f0d080, #C9A84C);
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px rgba(201,168,76,0.8);
+}
+
+/* ═════ BACK TO TOP ═════ */
+#back-to-top {
+  position: fixed; bottom: 32px; right: 32px; z-index: 1000;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.4);
+  color: #C9A84C; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+#back-to-top.visible { opacity: 1; transform: translateY(0); }
+#back-to-top:hover { background: rgba(201,168,76,0.25); }
+
+/* ═════ HAMBURGER ═════ */
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 8px; z-index: 1001;
+}
+.nav-hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: #C9A84C; border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+@media (max-width: 768px) { .nav-hamburger { display: flex; } }
+
+/* ═════ MOBILE MENU ═════ */
+.mobile-menu {
+  position: fixed; inset: 0 0 0 auto; width: min(320px, 100vw);
+  background: #080808; border-left: 1px solid rgba(201,168,76,0.2);
+  z-index: 9000; display: flex; flex-direction: column;
+  justify-content: center; gap: 8px; padding: 48px 40px;
+  transform: translateX(100%); transition: transform 0.45s cubic-bezier(0.76,0,0.24,1);
+}
+.mobile-menu.open { transform: translateX(0); }
+.mobile-menu-close {
+  position: absolute; top: 24px; right: 24px;
+  background: none; border: none; color: rgba(255,255,255,0.5); font-size: 20px; cursor: pointer;
+}
+.mobile-menu-link {
+  font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.75); text-decoration: none;
+  transition: color 0.2s ease; padding: 6px 0; border-bottom: 1px solid rgba(201,168,76,0.08);
+}
+.mobile-menu-link:hover { color: #C9A84C; }
+.mobile-menu-cta { margin-top: 32px; text-align: center; }
+.mobile-menu-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 8999;
+  opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+  backdrop-filter: blur(4px);
+}
+.mobile-menu-backdrop.open { opacity: 1; pointer-events: all; }
+
+/* ═════ PORTFOLIO ═════ */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 16px;
+  margin-top: 48px;
+}
+.portfolio-item {
+  position: relative; overflow: hidden; border-radius: 12px;
+  border: 1px solid rgba(201,168,76,0.15); aspect-ratio: 4/3;
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+  opacity: 0; transform: translateY(30px);
+}
+.portfolio-item:hover { border-color: rgba(201,168,76,0.45); transform: translateY(-4px); }
+.portfolio-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+.portfolio-item:hover img { transform: scale(1.05); }
+.portfolio-featured { grid-column: span 2; aspect-ratio: 16/9; }
+.portfolio-wide     { grid-column: span 2; aspect-ratio: 16/9; }
+
+.portfolio-placeholder {
+  width: 100%; height: 100%; background: #0d0d0d;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  color: rgba(201,168,76,0.4); font-family: 'DM Sans',sans-serif; font-size: 12px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.portfolio-overlay {
+  position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.8) 0%, transparent 50%);
+  display: flex; align-items: flex-end; padding: 16px;
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.portfolio-item:hover .portfolio-overlay { opacity: 1; }
+.portfolio-tag {
+  font-family: 'DM Sans',sans-serif; font-size: 12px; letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.8); text-transform: uppercase;
+  background: rgba(201,168,76,0.2); border: 1px solid rgba(201,168,76,0.3);
+  padding: 4px 10px; border-radius: 20px;
+}
+
+@media (max-width: 900px) {
+  .portfolio-grid { grid-template-columns: repeat(2,1fr); }
+  .portfolio-featured, .portfolio-wide { grid-column: span 2; }
+}
+@media (max-width: 600px) {
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .portfolio-featured, .portfolio-wide { grid-column: span 1; aspect-ratio: 4/3; }
+}
+
+/* ═════ STAT-NUM animation ═════ */
+.stat-num { transition: color 0.3s ease; }
+.stat-num.counting { color: #C9A84C; }
+
+/* ═════ SCRAMBLE TITLES ═════ */
+.scramble-ready { display: inline-block; }
+
+/* ═════ CURSEUR MAGNÉTIQUE ═════ */
+.magnetic { display: inline-block; transition: transform 0.3s cubic-bezier(0.23,1,0.32,1); }
+
   @media (prefers-reduced-motion: reduce) {
     .hero-video { display: none; }
     .scroll-drone, .scroll-drone-light { display: none; }
@@ -1429,6 +1553,9 @@
 </head>
 <body>
 
+<!-- SCROLL PROGRESS BAR -->
+<div id="scroll-progress"></div>
+
 <!-- PAGE LOADER -->
 <div id="page-loader">
   <img class="loader-logo" src="embleme-signature.png" alt="LATA VISUALS">
@@ -1442,12 +1569,30 @@
   </div>
   <div class="nav-links">
     <a href="#about">À propos</a>
+    <a href="#portfolio">Portfolio</a>
     <a href="#services">Services</a>
     <a href="#plans">Abonnements</a>
     <a href="#contact">Contact</a>
   </div>
   <a href="#contact" class="nav-cta">Devis</a>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileMenuClose">✕</button>
+  <nav class="mobile-menu-nav">
+    <a href="#about"    class="mobile-menu-link" data-close>À propos</a>
+    <a href="#arsenal"  class="mobile-menu-link" data-close>L'Arsenal</a>
+    <a href="#services" class="mobile-menu-link" data-close>Services</a>
+    <a href="#plans"    class="mobile-menu-link" data-close>Abonnements</a>
+    <a href="#contact"  class="mobile-menu-link" data-close>Contact</a>
+  </nav>
+  <a href="#contact" class="btn-primary mobile-menu-cta" data-close>Demander un devis →</a>
+</div>
+<div class="mobile-menu-backdrop" id="mobileMenuBackdrop"></div>
 
 <!-- HERO avec vidéo background -->
 <section class="hero hero-video-bg">
@@ -1614,7 +1759,7 @@
       </div>
       <div class="about-stats">
         <div class="stat-card">
-          <div class="stat-num">4K</div>
+          <div class="stat-num" data-count="4" data-suffix="K">4K</div>
           <div class="stat-lab">Qualité drone</div>
         </div>
         <div class="stat-card">
@@ -1622,11 +1767,11 @@
           <div class="stat-lab">Zone d'intervention</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">48H</div>
+          <div class="stat-num" data-count="48" data-suffix="H">48H</div>
           <div class="stat-lab">Délai livraison</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">100%</div>
+          <div class="stat-num" data-count="100" data-suffix="%">100%</div>
           <div class="stat-lab">Prêt à publier</div>
         </div>
       </div>
@@ -1808,6 +1953,51 @@
 </section>
 
 
+<!-- PORTFOLIO -->
+<section class="section portfolio-section" id="portfolio">
+  <div class="section-container">
+    <div class="section-eyebrow">Réalisations</div>
+    <h2 class="section-title">Le Travail</h2>
+    <p class="section-desc">Photos et vidéos prises sur le terrain — clubs, tournois, événements PACA.<br>
+    <span style="color:rgba(255,255,255,0.35);font-size:13px;">Les médias arrivent bientôt — revenez vite.</span></p>
+
+    <div class="portfolio-grid">
+      <div class="portfolio-item portfolio-featured" data-index="0">
+        <div class="portfolio-placeholder">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="10" stroke="#C9A84C" stroke-width="1.5"/><circle cx="20" cy="20" r="5" fill="#C9A84C" opacity="0.4"/><line x1="20" y1="2" x2="20" y2="8" stroke="#C9A84C" stroke-width="1.5"/><line x1="20" y1="32" x2="20" y2="38" stroke="#C9A84C" stroke-width="1.5"/><line x1="2" y1="20" x2="8" y2="20" stroke="#C9A84C" stroke-width="1.5"/><line x1="32" y1="20" x2="38" y2="20" stroke="#C9A84C" stroke-width="1.5"/></svg>
+          <span>Drone Shot</span>
+        </div>
+        <div class="portfolio-overlay"><span class="portfolio-tag">Sport · Drone</span></div>
+      </div>
+      <div class="portfolio-item" data-index="1">
+        <div class="portfolio-placeholder"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="8" width="24" height="18" rx="2" stroke="#C9A84C" stroke-width="1.5"/><circle cx="16" cy="17" r="5" stroke="#C9A84C" stroke-width="1.5"/><path d="M11 8 L13 4 H19 L21 8" stroke="#C9A84C" stroke-width="1.5"/></svg><span>Photo Sport</span></div>
+        <div class="portfolio-overlay"><span class="portfolio-tag">Tennis · Portrait</span></div>
+      </div>
+      <div class="portfolio-item" data-index="2">
+        <div class="portfolio-placeholder"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="8" width="24" height="18" rx="2" stroke="#C9A84C" stroke-width="1.5"/><circle cx="16" cy="17" r="5" stroke="#C9A84C" stroke-width="1.5"/><path d="M11 8 L13 4 H19 L21 8" stroke="#C9A84C" stroke-width="1.5"/></svg><span>Photo Padel</span></div>
+        <div class="portfolio-overlay"><span class="portfolio-tag">Padel · Action</span></div>
+      </div>
+      <div class="portfolio-item portfolio-wide" data-index="3">
+        <div class="portfolio-placeholder"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="10" stroke="#C9A84C" stroke-width="1.5"/><circle cx="20" cy="20" r="5" fill="#C9A84C" opacity="0.4"/><line x1="20" y1="2" x2="20" y2="8" stroke="#C9A84C" stroke-width="1.5"/><line x1="20" y1="32" x2="20" y2="38" stroke="#C9A84C" stroke-width="1.5"/><line x1="2" y1="20" x2="8" y2="20" stroke="#C9A84C" stroke-width="1.5"/><line x1="32" y1="20" x2="38" y2="20" stroke="#C9A84C" stroke-width="1.5"/></svg><span>Vue aérienne</span></div>
+        <div class="portfolio-overlay"><span class="portfolio-tag">Événement · Aérien</span></div>
+      </div>
+      <div class="portfolio-item" data-index="4">
+        <div class="portfolio-placeholder"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="8" width="24" height="18" rx="2" stroke="#C9A84C" stroke-width="1.5"/><circle cx="16" cy="17" r="5" stroke="#C9A84C" stroke-width="1.5"/><path d="M11 8 L13 4 H19 L21 8" stroke="#C9A84C" stroke-width="1.5"/></svg><span>Reel</span></div>
+        <div class="portfolio-overlay"><span class="portfolio-tag">Instagram · Reel</span></div>
+      </div>
+      <div class="portfolio-item" data-index="5">
+        <div class="portfolio-placeholder"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="8" width="24" height="18" rx="2" stroke="#C9A84C" stroke-width="1.5"/><circle cx="16" cy="17" r="5" stroke="#C9A84C" stroke-width="1.5"/><path d="M11 8 L13 4 H19 L21 8" stroke="#C9A84C" stroke-width="1.5"/></svg><span>Club Sport</span></div>
+        <div class="portfolio-overlay"><span class="portfolio-tag">Club · Identité</span></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:40px;">
+      <a href="#contact" class="btn-primary">Discuter de votre projet →</a>
+    </div>
+  </div>
+</section>
+
+
 <!-- PLANS -->
 <section class="section plans" id="plans">
   <div class="section-container">
@@ -1943,28 +2133,6 @@
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-container">
-    <div class="footer-main">
-      <div class="footer-brand">
-        <img class="footer-logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdvbGRHcmFkRSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNFOEM5N0EiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOUM3RTJFIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KCiAgPGNpcmNsZSBjeD0iMTUwIiBjeT0iMTUwIiByPSIxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGNpcmNsZSBjeD0iMTUwIiBjeT0iMTUwIiByPSIxMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KCiAgPHBhdGggZD0iTSA1MCwxNTAgQSAxMDAsMTAwIDAgMCwxIDk5LDc4IiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTSAyNTAsMTUwIEEgMTAwLDEwMCAwIDAsMSAyMDEsMjIyIiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE1MCwgMTUwKSI+CiAgICA8bGluZSB4MT0iLTQ1IiB5MT0iLTQ1IiB4Mj0iNDUiIHkyPSI0NSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgPGxpbmUgeDE9IjQ1IiB5MT0iLTQ1IiB4Mj0iLTQ1IiB5Mj0iNDUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgIDxjaXJjbGUgY3g9Ii00NSIgY3k9Ii00NSIgcj0iMTQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIyLjMiLz4KICAgIDxjaXJjbGUgY3g9IjQ1IiBjeT0iLTQ1IiByPSIxNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjIuMyIvPgogICAgPGNpcmNsZSBjeD0iLTQ1IiBjeT0iNDUiIHI9IjE0IiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMi4zIi8+CiAgICA8Y2lyY2xlIGN4PSI0NSIgY3k9IjQ1IiByPSIxNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjIuMyIvPgogICAgPGxpbmUgeDE9Ii01NyIgeTE9Ii00NSIgeDI9Ii0zMyIgeTI9Ii00NSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC42Ii8+CiAgICA8bGluZSB4MT0iLTQ1IiB5MT0iLTU3IiB4Mj0iLTQ1IiB5Mj0iLTMzIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSIzMyIgeTE9Ii00NSIgeDI9IjU3IiB5Mj0iLTQ1IiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSI0NSIgeTE9Ii01NyIgeDI9IjQ1IiB5Mj0iLTMzIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSItNTciIHkxPSI0NSIgeDI9Ii0zMyIgeTI9IjQ1IiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSItNDUiIHkxPSIzMyIgeDI9Ii00NSIgeTI9IjU3IiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KICAgIDxsaW5lIHgxPSIzMyIgeTE9IjQ1IiB4Mj0iNTciIHkyPSI0NSIgc3Ryb2tlPSIjQzlBODRDIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC42Ii8+CiAgICA8bGluZSB4MT0iNDUiIHkxPSIzMyIgeDI9IjQ1IiB5Mj0iNTciIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNiIvPgogICAgPHJlY3QgeD0iLTE2IiB5PSItMTYiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0idXJsKCNnb2xkR3JhZEUpIiByeD0iMi41Ii8+CiAgICA8Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iOCIgZmlsbD0iIzA4MDgwOCIvPgogICAgPGNpcmNsZSBjeD0iMCIgY3k9IjAiIHI9IjUiIGZpbGw9IiNDOUE4NEMiLz4KICA8L2c+Cjwvc3ZnPgo=" alt="">
-        <div>
-          <div class="footer-name-big">LATA VISUALS</div>
-          <div class="footer-tagline">Drone · Photo · Contenu · PACA</div>
-        </div>
-      </div>
-      <div class="footer-socials">
-        <a href="https://instagram.com/lata_visuals" target="_blank" class="social">IG</a>
-        <a href="mailto:fabio_lata@icloud.com" class="social">@</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 LATA VISUALS · Fabio Latagliata · Tous droits réservés</span>
-      <span class="gold-text">Télépilote UAS Pro · CM Certifié</span>
-    </div>
-  </div>
-</footer>
 
 <!-- FOOTER PREMIUM -->
 <footer class="footer-premium" id="footer-premium">
@@ -1983,6 +2151,9 @@
 <!-- CURSEUR CUSTOM -->
 <div class="custom-cursor-outline" id="cursorOutline"></div>
 <div class="custom-cursor" id="cursorDot"></div>
+
+<!-- BACK TO TOP -->
+<button id="back-to-top" aria-label="Retour en haut">↑</button>
 
 <!-- DRONE 3D QUI SUIT LE SCROLL -->
 <div class="scroll-drone-light" id="droneLight"></div>
@@ -3087,6 +3258,142 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         scrollTrigger: { trigger: '.arsenal-grid', start: 'top 85%', toggleActions: 'play none none none' } }
     );
   }
+})();
+
+
+/* ═══════════ SCROLL PROGRESS BAR ═══════════ */
+(function() {
+  var bar = document.getElementById('scroll-progress');
+  if (!bar) return;
+  window.addEventListener('scroll', function() {
+    var s = document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? (s / h) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+/* ═══════════ BACK TO TOP ═══════════ */
+(function() {
+  var btn = document.getElementById('back-to-top');
+  if (!btn) return;
+  window.addEventListener('scroll', function() {
+    btn.classList.toggle('visible', window.scrollY > 500);
+  }, { passive: true });
+  btn.addEventListener('click', function() {
+    if (typeof lenis !== 'undefined') lenis.scrollTo(0, { duration: 1.4 });
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+/* ═══════════ HAMBURGER MOBILE MENU ═══════════ */
+(function() {
+  var btn      = document.getElementById('navHamburger');
+  var menu     = document.getElementById('mobileMenu');
+  var backdrop = document.getElementById('mobileMenuBackdrop');
+  var closeBtn = document.getElementById('mobileMenuClose');
+  if (!btn || !menu) return;
+
+  function openMenu()  { menu.classList.add('open'); backdrop.classList.add('open'); btn.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { menu.classList.remove('open'); backdrop.classList.remove('open'); btn.classList.remove('open'); document.body.style.overflow = ''; }
+
+  btn.addEventListener('click', openMenu);
+  closeBtn.addEventListener('click', closeMenu);
+  backdrop.addEventListener('click', closeMenu);
+
+  document.querySelectorAll('[data-close]').forEach(function(el) {
+    el.addEventListener('click', closeMenu);
+  });
+})();
+
+/* ═══════════ ANIMATED COUNTERS ═══════════ */
+(function() {
+  var counters = document.querySelectorAll('.stat-num[data-count]');
+  if (!counters.length) return;
+
+  function animateCounter(el) {
+    var target  = parseInt(el.getAttribute('data-count'), 10);
+    var suffix  = el.getAttribute('data-suffix') || '';
+    var duration = 1400;
+    var start    = performance.now();
+    el.classList.add('counting');
+
+    function step(now) {
+      var progress = Math.min((now - start) / duration, 1);
+      var ease     = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(ease * target) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+      else { el.textContent = target + suffix; el.classList.remove('counting'); }
+    }
+    requestAnimationFrame(step);
+  }
+
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { animateCounter(e.target); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(function(c) { obs.observe(c); });
+})();
+
+/* ═══════════ TEXT SCRAMBLE sur les section-title ═══════════ */
+(function() {
+  var chars  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789·—';
+  var titles = document.querySelectorAll('.section-title');
+
+  function scramble(el) {
+    var original = el.textContent;
+    var iter     = 0;
+    var maxIter  = original.length * 3;
+    var interval = setInterval(function() {
+      el.textContent = original.split('').map(function(ch, i) {
+        if (ch === ' ' || ch === '\n') return ch;
+        if (i < iter / 3) return original[i];
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+      iter++;
+      if (iter > maxIter) { el.textContent = original; clearInterval(interval); }
+    }, 30);
+  }
+
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { scramble(e.target); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.6 });
+
+  titles.forEach(function(t) { obs.observe(t); });
+})();
+
+/* ═══════════ CURSEUR MAGNÉTIQUE sur les CTA ═══════════ */
+(function() {
+  if (!window.matchMedia('(hover:hover)').matches) return;
+  var targets = document.querySelectorAll('.btn-primary, .btn-secondary, .nav-cta, .form-submit');
+
+  targets.forEach(function(el) {
+    el.classList.add('magnetic');
+    el.addEventListener('mousemove', function(e) {
+      var r   = el.getBoundingClientRect();
+      var cx  = r.left + r.width  / 2;
+      var cy  = r.top  + r.height / 2;
+      var dx  = (e.clientX - cx) * 0.28;
+      var dy  = (e.clientY - cy) * 0.28;
+      el.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+    });
+    el.addEventListener('mouseleave', function() {
+      el.style.transform = '';
+    });
+  });
+})();
+
+/* ═══════════ PORTFOLIO GSAP stagger ═══════════ */
+(function() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.fromTo('.portfolio-item',
+    { opacity: 0, y: 30 },
+    { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out',
+      scrollTrigger: { trigger: '.portfolio-grid', start: 'top 88%', toggleActions: 'play none none none' } }
+  );
 })();
 
 </script>
