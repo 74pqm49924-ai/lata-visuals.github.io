@@ -67,7 +67,8 @@
     --grey: #999;
     --grey-dim: #2a2a2a;
   }
-  html { scroll-behavior: smooth; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   body {
     background: var(--black);
     color: var(--white);
@@ -75,105 +76,194 @@
     font-weight: 400;
     line-height: 1.6;
     overflow-x: hidden;
+    margin: 0; padding: 0;
   }
 
   /* NAVBAR */
   .navbar {
     position: fixed;
     top: 0; left: 0; right: 0;
-    padding: 20px 40px;
-    background: rgba(8, 8, 8, 0.85);
-    backdrop-filter: blur(10px);
-    z-index: 100;
+    padding: 22px 40px;
+    background: transparent;
+    z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--grey-dim);
+    transition: background 0.4s ease, padding 0.3s ease, border-color 0.4s ease;
+    border-bottom: 1px solid transparent;
   }
-  .nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .navbar.compact {
+    background: rgba(5,5,5,0.93);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 14px 40px;
+    border-bottom-color: rgba(201,168,76,0.12);
   }
-  .nav-logo {
-    width: 32px;
-    height: 32px;
-  }
+  .nav-brand { display: flex; align-items: center; gap: 12px; }
+  .nav-logo { width: 32px; height: 32px; }
   .nav-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 4px;
-    color: var(--white);
+    font-size: 18px; letter-spacing: 4px; color: var(--white);
   }
-  .nav-links {
-    display: flex;
-    gap: 32px;
-  }
+  .nav-links { display: flex; gap: 32px; }
   .nav-links a {
-    color: var(--grey);
+    color: rgba(255,255,255,0.82);
     text-decoration: none;
-    font-size: 12px;
-    letter-spacing: 3px;
+    font-size: 11px; letter-spacing: 3px;
     text-transform: uppercase;
     transition: color 0.2s;
   }
   .nav-links a:hover { color: var(--gold); }
   .nav-cta {
-    background: var(--gold);
-    color: var(--black);
-    padding: 10px 20px;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s;
+    background: var(--gold); color: var(--black);
+    padding: 10px 22px; font-size: 11px;
+    letter-spacing: 3px; text-transform: uppercase;
+    font-weight: 600; text-decoration: none;
+    border-radius: 2px; transition: all 0.2s;
   }
-  .nav-cta:hover {
-    background: var(--gold-light);
-    transform: translateY(-1px);
+  .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+  /* Hamburger — mobile only */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column; justify-content: space-between;
+    width: 26px; height: 16px;
+    background: none; border: none; cursor: pointer; padding: 0;
+    z-index: 1001;
+  }
+  .nav-hamburger span {
+    display: block; width: 100%; height: 2px;
+    background: var(--gold); border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  /* Mobile menu overlay */
+  .mobile-menu {
+    position: fixed; inset: 0;
+    background: rgba(3,3,3,0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 999;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transform: translateY(-12px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .mobile-menu.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+  .mobile-menu-close {
+    position: absolute; top: 22px; right: 22px;
+    background: none; border: 1px solid rgba(201,168,76,0.25);
+    color: rgba(255,255,255,0.7); font-size: 16px;
+    width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .mobile-menu-close:hover { border-color: var(--gold); color: var(--gold); }
+  .mobile-menu-nav {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px; margin-bottom: 40px;
+  }
+  .mobile-menu-link {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 8vw, 52px); letter-spacing: 6px;
+    color: rgba(255,255,255,0.85); text-decoration: none;
+    text-transform: uppercase; transition: color 0.2s; line-height: 1.2;
+  }
+  .mobile-menu-link:hover { color: var(--gold); }
+  .mobile-menu-cta { font-size: 12px; letter-spacing: 4px; padding: 16px 40px; }
+  .mobile-menu-backdrop { display: none; }
+  @media (max-width: 768px) {
+    .nav-links, .nav-cta { display: none; }
+    .nav-hamburger { display: flex; }
+    .navbar { padding: 18px 20px; }
+    .navbar.compact { padding: 12px 20px; }
   }
 
-  /* HERO */
+  /* HERO — vidéo plein écran */
   .hero {
-    min-height: 100vh;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    overflow: hidden;
+    background: #000;
     display: flex;
     align-items: center;
-    padding: 120px 40px 80px;
-    position: relative;
-    overflow: hidden;
   }
-  .hero::before {
-    content: '';
+  /* Video z-index 0 */
+  .hero-video-wrapper {
     position: absolute;
-    top: -20%; right: -10%;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
-    pointer-events: none;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
   }
-  .hero::after {
-    content: '';
+  .hero-video {
     position: absolute;
-    bottom: -20%; left: -10%;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
-    pointer-events: none;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
   }
-  .hero-grid {
+  /* Overlay z-index 1 */
+  .hero-video-overlay {
     position: absolute;
     inset: 0;
+    background: rgba(0,0,0,0.50);
+    z-index: 1;
+  }
+  /* Grid texture z-index 2 */
+  .hero-grid {
+    position: absolute;
+    inset: 0; z-index: 2;
     background-image:
-      linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
     pointer-events: none;
   }
+  #hero-particles {
+    position: absolute;
+    inset: 0; z-index: 2;
+    pointer-events: none;
+    width: 100%; height: 100%;
+  }
+  /* Content z-index 3 */
   .hero-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
     position: relative;
-    z-index: 2;
+    z-index: 3;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 36px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .scroll-indicator-text {
+    font-family: 'DM Sans', sans-serif; font-size: 9px;
+    letter-spacing: 4px; color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    animation: scrollPulse 2.5s ease-in-out infinite;
+  }
+  .scroll-indicator-line {
+    width: 1px; height: 48px;
+    background: linear-gradient(to bottom, rgba(201,168,76,0.7), transparent);
+    animation: scrollLine 2.5s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+  @keyframes scrollLine {
+    0%{transform:scaleY(0);transform-origin:top}
+    50%{transform:scaleY(1);transform-origin:top}
+    51%{transform:scaleY(1);transform-origin:bottom}
+    100%{transform:scaleY(0);transform-origin:bottom}
   }
   .hero-logo {
     width: 100px;
@@ -280,6 +370,7 @@
   .section {
     padding: 100px 40px;
     position: relative;
+    background: #080808;
   }
   .section-container {
     max-width: 1200px;
@@ -912,9 +1003,10 @@
   /* RESPONSIVE */
   @media (max-width: 900px) {
     .navbar { padding: 16px 20px; }
-    .nav-links { display: none; }
+    .nav-links, .nav-cta { display: none; }
+    .nav-hamburger { display: flex; }
     .section { padding: 60px 20px; }
-    .hero { padding: 100px 20px 60px; }
+    .hero-container { padding: 0 20px; }
     .about-grid,
     .services-grid,
     .plans-grid,
@@ -1039,34 +1131,6 @@
 }
 .arsenal-card-spec span { display: block; }
 
-/* ═════ SHOWREEL SECTION ═════ */
-.showreel-section { background: #020202; padding: 0; }
-.showreel-inner { max-width: 1200px; margin: 0 auto; padding: 80px 24px; }
-.showreel-header { text-align: center; margin-bottom: 40px; }
-.showreel-video-wrap {
-  position: relative; width: 100%;
-  border-radius: 16px; overflow: hidden;
-  border: 1px solid rgba(201,168,76,0.15);
-  box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.06);
-  background: #000; aspect-ratio: 16/9;
-}
-.showreel-video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.showreel-badge {
-  position: absolute; top: 18px; left: 18px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: rgba(255,255,255,0.75);
-  background: rgba(0,0,0,0.55);
-  border: 1px solid rgba(201,168,76,0.22);
-  padding: 5px 13px; border-radius: 20px;
-  backdrop-filter: blur(8px);
-  pointer-events: none;
-}
-@media (max-width: 600px) {
-  .showreel-inner { padding: 48px 16px; }
-  .arsenal-card { padding: 18px 14px 16px; }
-  .arsenal-card-name { font-size: 15px; }
-}
 
 </style>
 <!-- Lenis smooth scroll -->
@@ -1125,7 +1189,6 @@
   <!-- Vidéo en background -->
   <div class="hero-video-wrapper">
     <video class="hero-video" autoplay muted loop playsinline preload="auto">
-      <source src="hero-video.webm" type="video/webm">
       <source src="hero-video.mp4" type="video/mp4">
     </video>
     <div class="hero-video-overlay"></div>
@@ -1160,22 +1223,6 @@
   <div class="scroll-indicator">
     <div class="scroll-indicator-text">SCROLL</div>
     <div class="scroll-indicator-line"></div>
-  </div>
-</section>
-
-<!-- SHOWREEL -->
-<section class="showreel-section" id="showreel">
-  <div class="showreel-inner">
-    <div class="showreel-header">
-      <div class="section-eyebrow">Showreel</div>
-      <h2 class="section-title">En action</h2>
-    </div>
-    <div class="showreel-video-wrap">
-      <div class="showreel-badge">📍 Région PACA · 2025</div>
-      <video autoplay muted loop playsinline controls preload="auto">
-        <source src="hero-video.mp4" type="video/mp4">
-      </video>
-    </div>
   </div>
 </section>
 
@@ -2394,6 +2441,20 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     if (e.key === 'ArrowLeft')  prev();
     if (e.key === 'ArrowRight') next();
   });
+})();
+
+/* ═══════════ MOBILE MENU ═══════════ */
+(function() {
+  var btn  = document.getElementById('navHamburger');
+  var menu = document.getElementById('mobileMenu');
+  var closeBtn = document.getElementById('mobileMenuClose');
+  if (!btn || !menu) return;
+  function openMenu()  { menu.classList.add('open'); btn.classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeMenu() { menu.classList.remove('open'); btn.classList.remove('open'); document.body.style.overflow=''; }
+  btn.addEventListener('click', function() { menu.classList.contains('open') ? closeMenu() : openMenu(); });
+  if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+  document.querySelectorAll('[data-close]').forEach(function(el){ el.addEventListener('click', closeMenu); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeMenu(); });
 })();
 
 </script>
