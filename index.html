@@ -1131,6 +1131,121 @@
 }
 .arsenal-card-spec span { display: block; }
 
+/* ═════ PORTFOLIO BENTO GRID ═════ */
+.portfolio-section { background: #050505; }
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 220px;
+  gap: 10px;
+  margin-top: 48px;
+}
+/* Bento layout — chaque photo a sa taille */
+.portfolio-item         { position: relative; overflow: hidden; border-radius: 10px; background: #0d0d0d; cursor: pointer; }
+.pi-1 { grid-column: span 7; grid-row: span 2; }  /* grande image gauche */
+.pi-2 { grid-column: span 5; grid-row: span 1; }  /* droite haut */
+.pi-3 { grid-column: span 5; grid-row: span 1; }  /* droite bas */
+.pi-4 { grid-column: span 4; grid-row: span 2; }
+.pi-5 { grid-column: span 4; grid-row: span 2; }
+.pi-6 { grid-column: span 4; grid-row: span 2; }
+.pi-7 { grid-column: span 6; grid-row: span 2; }
+.pi-8 { grid-column: span 3; grid-row: span 2; }
+.pi-9 { grid-column: span 3; grid-row: span 2; }
+
+.portfolio-item img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
+  will-change: transform;
+}
+.portfolio-item:hover img { transform: scale(1.05); }
+
+/* Overlay doré au hover */
+.portfolio-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, transparent 50%, rgba(201,168,76,0.18) 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.portfolio-item:hover .portfolio-overlay { opacity: 1; }
+
+/* Reveal animation */
+.portfolio-item {
+  opacity: 0;
+  transform: translateY(20px) scale(0.99);
+}
+.portfolio-item.pi-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .portfolio-grid { grid-template-columns: repeat(6,1fr); grid-auto-rows: 180px; }
+  .pi-1 { grid-column: span 6; grid-row: span 2; }
+  .pi-2,.pi-3 { grid-column: span 3; grid-row: span 2; }
+  .pi-4,.pi-5,.pi-6 { grid-column: span 3; grid-row: span 2; }
+  .pi-7 { grid-column: span 6; grid-row: span 2; }
+  .pi-8,.pi-9 { grid-column: span 3; grid-row: span 2; }
+}
+@media (max-width: 540px) {
+  .portfolio-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 160px; gap: 8px; }
+  .pi-1 { grid-column: span 2; grid-row: span 2; }
+  .pi-2,.pi-3,.pi-4,.pi-5,.pi-6,.pi-8,.pi-9 { grid-column: span 1; grid-row: span 1; }
+  .pi-7 { grid-column: span 2; grid-row: span 1; }
+}
+
+/* ═════ LIGHTBOX ═════ */
+.lb-wrap {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.lb-wrap.lb-open { opacity: 1; pointer-events: all; }
+.lb-bg { position: absolute; inset: 0; background: rgba(3,3,3,0.96); backdrop-filter: blur(14px); }
+.lb-img-wrap {
+  position: relative; z-index: 1;
+  max-width: 90vw; max-height: 88vh;
+  transform: scale(0.94);
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.lb-wrap.lb-open .lb-img-wrap { transform: scale(1); }
+.lb-img-wrap img {
+  max-width: 90vw; max-height: 88vh;
+  object-fit: contain; border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  display: block;
+}
+.lb-close {
+  position: absolute; top: 20px; right: 22px; z-index: 2;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+  color: #fff; font-size: 18px; width: 42px; height: 42px;
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.lb-close:hover { background: rgba(201,168,76,0.3); }
+.lb-prev, .lb-next {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+  color: rgba(255,255,255,0.9); font-size: 28px; width: 50px; height: 50px;
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+}
+.lb-prev { left: 18px; }
+.lb-next { right: 18px; }
+.lb-prev:hover { background: rgba(201,168,76,0.3); transform: translateY(-50%) translateX(-2px); }
+.lb-next:hover { background: rgba(201,168,76,0.3); transform: translateY(-50%) translateX(2px); }
+.lb-caption {
+  position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+  z-index: 2; font-family: 'DM Sans',sans-serif; font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: rgba(201,168,76,0.65);
+}
+
 /* ═════ AVANT / APRÈS ═════ */
 .before-after-section { background: #060606; }
 .ba-grid {
@@ -2144,19 +2259,25 @@
   });
 
   // ═══════════════════════════════════════════════════════
-  //  5. PARALLAXE SUBTILE SUR HERO
+  //  5. PARALLAXE SUBTILE SUR HERO (scale + fade uniquement)
   // ═══════════════════════════════════════════════════════
   const heroVideo = document.querySelector('.hero-video');
   const heroContainer = document.querySelector('.hero-container');
   if (heroVideo && heroContainer) {
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
-      const heroHeight = document.querySelector('.hero-video-bg')?.offsetHeight || window.innerHeight;
+      const heroHeight = window.innerHeight;
       if (scrollY < heroHeight) {
         const progress = scrollY / heroHeight;
-        heroVideo.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.3}px)) scale(${1 + progress * 0.1})`;
-        heroContainer.style.transform = `translateY(${scrollY * 0.2}px)`;
-        heroContainer.style.opacity = 1 - progress * 1.2;
+        // Zoom léger sur la vidéo — PAS de translate qui la décalerait
+        heroVideo.style.transform = `scale(${1 + progress * 0.06})`;
+        // Contenu dérive vers le haut et s'efface
+        heroContainer.style.transform = `translateY(${scrollY * 0.12}px)`;
+        heroContainer.style.opacity = Math.max(0, 1 - progress * 1.8);
+      } else {
+        heroVideo.style.transform = '';
+        heroContainer.style.transform = '';
+        heroContainer.style.opacity = '';
       }
     }, { passive: true });
   }
