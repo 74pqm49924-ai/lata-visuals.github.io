@@ -1154,7 +1154,7 @@
 
 .portfolio-item img {
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center;
+  object-fit: cover; object-position: center 25%;
   display: block;
   transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
   will-change: transform;
@@ -1261,7 +1261,7 @@
 .ba-compare {
   position: relative;
   width: 100%;
-  aspect-ratio: 3/2;
+  aspect-ratio: 4/3;
   overflow: hidden;
   border-radius: 12px;
   cursor: ew-resize;
@@ -1280,7 +1280,7 @@
 .ba-img-before img {
   width: 100%; height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center 20%;
   display: block;
   pointer-events: none;
 }
@@ -2333,7 +2333,7 @@ window.addEventListener('load', function() {
 /* ═══════════ LENIS SMOOTH SCROLL ═══════════ */
 var lenis;
 if (typeof Lenis !== 'undefined') {
-  lenis = new Lenis({ duration: 0.85, easing: function(t){ return 1 - Math.pow(1 - t, 3); }, smoothWheel: true, wheelMultiplier: 1, touchMultiplier: 1.5 });
+  lenis = new Lenis({ duration: 1.15, easing: function(t){ return 1 - Math.pow(1 - t, 3); }, smoothWheel: true, wheelMultiplier: 0.75, touchMultiplier: 1.2 });
   (function raf(time){ lenis.raf(time); requestAnimationFrame(raf); })(0);
   if (typeof ScrollTrigger !== 'undefined') { lenis.on('scroll', ScrollTrigger.update); }
 }
